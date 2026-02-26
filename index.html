@@ -1,11 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login - Game Educativo</title>
+    <style>
+        /* Um visual simples para não ficar feio */
+        body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 50px; }
+        .card { background: white; padding: 20px; border-radius: 8px; shadow: 0 2px 10px rgba(0,0,0,0.1); width: 300px; }
+        input { width: 100%; margin: 10px 0; padding: 10px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
+        .toggle { font-size: 0.8em; color: blue; cursor: pointer; text-align: center; margin-top: 10px; }
+    </style>
 </head>
 <body>
-    <p>My site</p>
+
+<div class="card" id="area-login">
+    <h2>Entrar no Jogo</h2>
+    <input type="text" id="login-user" placeholder="Usuário">
+    <input type="password" id="login-pass" placeholder="Senha">
+    <button onclick="fazerLogin()">Entrar</button>
+    <div class="toggle" onclick="trocarTela()">Não tem conta? Cadastre-se</div>
+</div>
+
+<div class="card" id="area-cadastro" style="display:none;">
+    <h2>Criar Conta</h2>
+    <input type="text" id="cad-user" placeholder="Escolha um Usuário">
+    <input type="password" id="cad-pass" placeholder="Crie uma Senha">
+    <button onclick="cadastrar()">Salvar Cadastro</button>
+    <div class="toggle" onclick="trocarTela()">Já tenho conta. Voltar</div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
