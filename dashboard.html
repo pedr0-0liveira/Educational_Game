@@ -45,42 +45,42 @@
     </div>
 
     <div class="grid">
-        <div class="card" onclick="alert('Indo para simulados...')">
+        <div class="card" onclick="window.location.href='simulado.html'">
             <h3>📝 Simulados</h3>
             <p>Treine com provas anteriores</p>
         </div>
-        <div class="card" onclick="alert('Abrindo Ranking...')">
+        <div class="card" onclick="alert('Ranking em desenvolvimento...')">
             <h3>🏆 Ranking</h3>
             <p>Veja sua posição na turma</p>
         </div>
-        <div class="card" onclick="alert('Verificando desempenho...')">
+        <div class="card" onclick="alert('Desempenho em desenvolvimento...')">
             <h3>📊 Meu Desempenho</h3>
             <p>Gráficos de acertos</p>
         </div>
     </div>
 
     <script>
-        // Ao carregar a página, vamos buscar o nome do usuário que salvamos no login
-        const usuarioLogado = localStorage.getItem('usuarioSalvo');
-        
+    const usuarioLogado = localStorage.getItem('usuarioSalvo');
+    let xpAtual = parseInt(localStorage.getItem('xpUsuario') || "0");
+
         if (!usuarioLogado) {
-            // Se não houver usuário salvo, ele tenta acessar sem login e a gente manda de volta
-            window.location.href = "index.html";
-        } else {
-            document.getElementById('boas-vindas').innerText = `Olá, ${usuarioLogado}! 👋`;
+        window.location.href = "index.html";
+        } 
+        else {
+        document.getElementById('boas-vindas').innerText = `Olá, ${usuarioLogado}! 👋`;
         }
 
-        function sair() {
-            // Aqui você pode decidir se quer apagar os dados ou só voltar pra tela inicial
-            window.location.href = "index.html";
-        }
+// Sistema de Nível Simples (A cada 100 XP sobe um nível)
+        let nivel = Math.floor(xpAtual / 100) + 1;
+        let progressoNoNivel = xpAtual % 100;
 
-        // Exemplo de como a barra de XP pode ser dinâmica
-        // Imagine que o aluno tem 600 pontos de 1000 necessários
-        let xpAtual = 600;
-        let xpTotal = 1000;
-        let porcentagem = (xpAtual / xpTotal) * 100;
-        document.getElementById('barra-xp').style.width = porcentagem + "%";
+    document.querySelector('.xp-container strong').innerText = `Nível ${nivel} - Aspirante`;
+    document.getElementById('barra-xp').style.width = progressoNoNivel + "%";
+    document.querySelector('small').innerText = `Total: ${xpAtual} XP | Faltam ${100 - progressoNoNivel} para o próximo nível`;
+
+    function sair() {
+    window.location.href = "index.html";
+    }
     </script>
 </body>
 </html>

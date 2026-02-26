@@ -22,11 +22,15 @@ function cadastrar() {
         return;
     }
 
-    // Salvando no localStorage (o "banco de dados" do navegador)
     localStorage.setItem('usuarioSalvo', user);
     localStorage.setItem('senhaSalva', pass);
+    
+    // Inicializa o XP com 0 caso não exista
+    if (!localStorage.getItem('xpUsuario')) {
+        localStorage.setItem('xpUsuario', '0');
+    }
 
-    alert("Cadastro realizado com sucesso! Agora faça login.");
+    alert("Cadastro realizado! Agora faça o login.");
     trocarTela();
 }
 
@@ -38,9 +42,7 @@ function fazerLogin() {
     const userNoBanco = localStorage.getItem('usuarioSalvo');
     const passNoBanco = localStorage.getItem('senhaSalva');
 
-    if (userDigitado === userNoBanco && passDigitado === passNoBanco) {
-        alert("Login realizado!");
-        // AGORA SIM: Redireciona para o dashboard
+    if (userDigitado === userNoBanco && passDigitado === passNoBanco && userNoBanco !== null) {
         window.location.href = "dashboard.html"; 
     } else {
         alert("Usuário ou senha incorretos.");
