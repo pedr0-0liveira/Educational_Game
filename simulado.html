@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulado - Desafio Técnico</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .quiz-container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-width: 600px; width: 100%; }
+        .pergunta { font-size: 1.2em; margin-bottom: 20px; font-weight: bold; color: #333; }
+        .opcoes { display: grid; gap: 10px; }
+        .btn-opcao { padding: 15px; border: 2px solid #007bff; border-radius: 8px; background: none; cursor: pointer; transition: 0.3s; text-align: left; font-size: 1em; }
+        .btn-opcao:hover { background: #e7f3ff; }
+        .info-topo { width: 100%; max-width: 600px; display: flex; justify-content: space-between; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="info-topo">
+        <span id="contador-questoes">Questão: 1/10</span>
+        <span id="xp-ganho">XP: 0</span>
+    </div>
+
+    <div class="quiz-container">
+        <div class="pergunta" id="texto-pergunta">Carregando pergunta...</div>
+        <div class="opcoes" id="caixa-opcoes">
+            </div>
+    </div>
+
+    <script src="questoes.js"></script>
+    <script src="logica-quiz.js"></script>
+</body>
+</html>
