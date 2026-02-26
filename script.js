@@ -35,14 +35,13 @@ function fazerLogin() {
     const userDigitado = document.getElementById('login-user').value;
     const passDigitado = document.getElementById('login-pass').value;
 
-    // Pegando o que está guardado
     const userNoBanco = localStorage.getItem('usuarioSalvo');
     const passNoBanco = localStorage.getItem('senhaSalva');
 
     if (userDigitado === userNoBanco && passDigitado === passNoBanco) {
-        alert("Login realizado! Bem-vindo ao Game.");
-        // Aqui você mandaria o aluno para a página do ranking
-        // window.location.href = "dashboard.html"; 
+        alert("Login realizado!");
+        // AGORA SIM: Redireciona para o dashboard
+        window.location.href = "dashboard.html"; 
     } else {
         alert("Usuário ou senha incorretos.");
     }
