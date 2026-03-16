@@ -6,81 +6,188 @@
     <title>Dashboard - Meu Futuro Técnico</title>
     <style>
         :root {
-            --primary: #007bff;
-            --success: #28a745;
-            --bg: #f4f7f6;
-        }
+    --primary: #007bff;
+    --dark: #2c3e50;
+    --light: #ecf0f1;
+    --success: #28a745;
+}
 
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; }
-        
-        /* Cabeçalho */
-        .header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        
-        /* Barra de Progresso */
-        .xp-container { background: white; padding: 20px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .progress-bar { background: #e0e0e0; border-radius: 20px; height: 25px; width: 100%; margin: 10px 0; overflow: hidden; }
-        .progress-fill { background: var(--success); height: 100%; width: 45%; /* Vamos controlar isso via JS depois */ transition: width 0.5s; }
+body { 
+    font-family: 'Segoe UI', sans-serif; 
+    margin: 0; 
+    display: flex; /* Cria as colunas */
+    height: 100vh; 
+    background: #f4f7f6;
+}
 
-        /* Grade de Cards */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
-        .card { background: white; padding: 30px; border-radius: 12px; text-align: center; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-bottom: 5px solid var(--primary); }
-        .card:hover { transform: translateY(-5px); background: #f0f7ff; }
-        
-        button.logout { background: #ff4757; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+/* --- BARRA LATERAL --- */
+.sidebar {
+    width: 260px;
+    background: var(--dark);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.sidebar h2 { 
+    font-size: 1.2em; 
+    border-bottom: 1px solid #34495e; 
+    padding-bottom: 20px; 
+    text-align: center;
+}
+
+.menu-item {
+    padding: 15px;
+    margin: 5px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+}
+
+.menu-item:hover { background: #34495e; }
+.menu-item.active { background: var(--primary); }
+
+.logout-btn {
+    margin-top: auto; /* Joga o botão para o final */
+    background: #e74c3c;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* --- CONTEÚDO PRINCIPAL --- */
+.main-content {
+    flex: 1; /* Ocupa o restante da tela */
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.header-home {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* --- GRÁFICOS SIMPLES (Stats) --- */
+.stats-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.bar-bg { background: #eee; height: 10px; border-radius: 5px; margin-top: 10px; }
+.bar-fill { height: 100%; border-radius: 5px; transition: 0.5s; }
     </style>
 </head>
 <body>
+<div class="sidebar">
+    <h2>🚀 Futuro Técnico</h2>
+    <div class="menu-item active" onclick="location.reload()">🏠 Home</div>
+    <div class="menu-item" onclick="alert('Em breve: Ranking completo')">🏆 Ranking</div>
+    <div class="logout-btn" onclick="sair()">Sair</div>
+</div>
 
-    <div class="header">
+<div class="main-content">
+    <div class="header-home">
         <h2 id="boas-vindas">Olá, Estudante!</h2>
-        <button class="logout" onclick="sair()">Sair</button>
+        <div id="status-nivel">Nível 1</div>
     </div>
 
-    <div class="xp-container">
-        <strong>Nível 5 - Aspirante a Técnico</strong>
-        <div class="progress-bar">
-            <div class="progress-fill" id="barra-xp"></div>
+    <div class="xp-container" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <strong>Progresso Atual</strong>
+        <div class="progress-bar" style="background: #e0e0e0; border-radius: 20px; height: 15px; margin: 10px 0; overflow: hidden;">
+            <div class="progress-fill" id="barra-xp" style="background: var(--success); height: 100%; width: 0%;"></div>
         </div>
-        <small>Faltam 150 XP para o nível 6</small>
+        <small id="xp-texto">0 XP</small>
     </div>
 
-    <div class="grid">
-        <div class="card" onclick="window.location.href='simulado.html'">
+    <div class="stats-container">
+        <div class="stat-card">
+            <strong>📊 Matemática</strong>
+            <div class="bar-bg"><div id="bar-mat" class="bar-fill" style="background: #3498db; width: 0%;"></div></div>
+            <small id="text-mat">Acertos: 0%</small>
+        </div>
+        <div class="stat-card">
+            <strong>📚 Português</strong>
+            <div class="bar-bg"><div id="bar-port" class="bar-fill" style="background: #9b59b6; width: 0%;"></div></div>
+            <small id="text-port">Acertos: 0%</small>
+        </div>
+    </div>
+
+    <h3 style="margin-top: 40px;">Começar Estudos</h3>
+    <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+        <div class="card" onclick="mostrarMaterias()" style="background: white; padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; border-bottom: 5px solid var(--primary); box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
             <h3>📝 Simulados</h3>
-            <p>Treine com provas anteriores</p>
-        </div>
-        <div class="card" onclick="alert('Ranking em desenvolvimento...')">
-            <h3>🏆 Ranking</h3>
-            <p>Veja sua posição na turma</p>
-        </div>
-        <div class="card" onclick="alert('Desempenho em desenvolvimento...')">
-            <h3>📊 Meu Desempenho</h3>
-            <p>Gráficos de acertos</p>
+            <div class="opcoes-materia" id="lista-materias" style="display:none; gap:10px; justify-content:center; margin-top:10px;">
+                <button onclick="iniciarSimulado(event, 'Portugues')" style="padding:5px 10px;">Português</button>
+                <button onclick="iniciarSimulado(event, 'Matematica')" style="padding:5px 10px;">Matemática</button>
+            </div>
         </div>
     </div>
-
-    <script>
-    const usuarioLogado = localStorage.getItem('usuarioSalvo');
-    let xpAtual = parseInt(localStorage.getItem('xpUsuario') || "0");
-
-        if (!usuarioLogado) {
-        window.location.href = "index.html";
-        } 
-        else {
-        document.getElementById('boas-vindas').innerText = `Olá, ${usuarioLogado}! 👋`;
-        }
-
-// Sistema de Nível Simples (A cada 100 XP sobe um nível)
-        let nivel = Math.floor(xpAtual / 100) + 1;
-        let progressoNoNivel = xpAtual % 100;
-
-    document.querySelector('.xp-container strong').innerText = `Nível ${nivel} - Aspirante`;
-    document.getElementById('barra-xp').style.width = progressoNoNivel + "%";
-    document.querySelector('small').innerText = `Total: ${xpAtual} XP | Faltam ${100 - progressoNoNivel} para o próximo nível`;
-
-    function sair() {
-    window.location.href = "index.html";
-    }
-    </script>
+</div>
 </body>
+<script>
+function carregarDashboard() {
+    const usuario = localStorage.getItem('usuarioSalvo') || "Estudante";
+    let xp = parseInt(localStorage.getItem('xpUsuario') || "0");
+    let stats = JSON.parse(localStorage.getItem('statsUsuario')) || {
+        Matematica: { acertos: 0, total: 0 },
+        Portugues: { acertos: 0, total: 0 }
+    };
+
+    // Atualiza Boas-vindas e XP
+    document.getElementById('boas-vindas').innerText = `Olá, ${usuario}! 👋`;
+    let nivel = Math.floor(xp / 100) + 1;
+    document.getElementById('status-nivel').innerText = `Nível ${nivel}`;
+    document.getElementById('barra-xp').style.width = (xp % 100) + "%";
+    document.getElementById('xp-texto').innerText = `${xp} XP total`;
+
+    const calcPerc = (materia) => {
+        if (!stats[materia] || stats[materia].total === 0) return 0;
+        return Math.round((stats[materia].acertos / stats[materia].total) * 100);
+    };
+
+    // Atualiza Gráficos
+    let percMat = calcPerc('Matematica');
+    document.getElementById('bar-mat').style.width = percMat + "%";
+    document.getElementById('text-mat').innerText = `Acertos: ${percMat}% (${stats.Matematica.acertos} questões)`;
+
+    let percPort = calcPerc('Portugues');
+    document.getElementById('bar-port').style.width = percPort + "%";
+    document.getElementById('text-port').innerText = `Acertos: ${percPort}% (${stats.Portugues.acertos} questões)`;
+}
+
+// --- Funções de Navegação que faltavam ---
+function mostrarMaterias() {
+    const lista = document.getElementById('lista-materias');
+    lista.style.display = lista.style.display === 'none' ? 'flex' : 'none';
+}
+
+function iniciarSimulado(event, materia) {
+    event.stopPropagation(); // Evita fechar o menu ao clicar no botão
+    localStorage.setItem('materiaFiltro', materia);
+    window.location.href = "simulado.html";
+}
+
+function sair() {
+    localStorage.removeItem('usuarioSalvo'); // Opcional: limpa o login ao sair
+    window.location.href = "index.html";
+}
+
+// Inicializa tudo
+carregarDashboard();
+</script>
 </html>
