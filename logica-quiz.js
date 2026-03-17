@@ -47,20 +47,32 @@ function exibirQuestao() {
 
 function checarResposta(escolha) {
     const correta = questoesFiltradas[questaoAtual].correta;
+    const botoes = document.querySelectorAll('.btn-opcao');
+    
+    // 1. Trava todos os botões para evitar cliques múltiplos
+    botoes.forEach(btn => btn.classList.add('travado'));
 
+    // 2. Verifica se acertou ou errou e aplica a animação
     if (escolha === correta) {
         acertos++;
-        // Mostra XP parcial apenas visualmente
+        botoes[escolha].classList.add('opcao-correta');
         document.getElementById('xp-ganho').innerText = `XP: ${acertos * 10}`;
-    }
-
-    questaoAtual++;
-
-    if (questaoAtual < questoesFiltradas.length) {
-        exibirQuestao();
     } else {
-        salvarResultados();
+        botoes[escolha].classList.add('opcao-errada');
+        // Opcional: Mostrar qual era a correta mesmo se ele errou
+        botoes[correta].classList.add('opcao-correta');
     }
+
+    // 3. Aguarda 1 segundo (1000ms) para mostrar o resultado antes de mudar
+    setTimeout(() => {
+        questaoAtual++;
+
+        if (questaoAtual < questoesFiltradas.length) {
+            exibirQuestao();
+        } else {
+            salvarResultados();
+        }
+    }, 1000); 
 }
 
 // 2. A PARTE QUE CORRIGE O SEU DASHBOARD

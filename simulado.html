@@ -18,6 +18,37 @@
         .btn-opcao { padding: 15px; border: 2px solid #007bff; border-radius: 8px; background: none; cursor: pointer; transition: 0.3s; text-align: left; font-size: 1em; }
         
         .btn-opcao:hover { background: #e7f3ff; border-color: #0056b3; }
+
+        /* Animação de Acerto (Pulso Verde) */
+@keyframes acerto-anim {
+    0% { transform: scale(1); background-color: white; }
+    50% { transform: scale(1.05); background-color: #28a745; color: white; }
+    100% { transform: scale(1); background-color: #28a745; color: white; }
+}
+
+/* Animação de Erro (Tremidinha Vermelha) */
+@keyframes erro-anim {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); background-color: #ff4d4d; color: white; }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); background-color: #ff4d4d; color: white; }
+}
+
+.opcao-correta {
+    animation: acerto-anim 0.5s ease forwards;
+    border-color: #28a745 !important;
+}
+
+.opcao-errada {
+    animation: erro-anim 0.4s ease forwards;
+    border-color: #dc3545 !important;
+}
+
+/* Trava os botões após o clique para o usuário não clicar duas vezes */
+.travado {
+    pointer-events: none;
+}
     </style>
 </head>
 <body>
