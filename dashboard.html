@@ -5,65 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Meu Futuro Técnico</title>
     <style>
-        :root {
-            --primary: #007bff;
-            --dark: #2c3e50;
-            --light: #ecf0f1;
-            --success: #28a745;
-        }
-
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; 
-            display: flex; 
-            height: 100vh; 
-            background: #f4f7f6;
-            overflow: hidden; 
-        }
-
-        /* --- SIDEBAR RETRÁTIL --- */
-        .sidebar {
-            width: 260px;
-            background: var(--dark);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .sidebar.collapsed { width: 70px; padding: 20px 10px; }
+        :root { --primary: #007bff; --dark: #2c3e50; --light: #ecf0f1; --success: #28a745; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: #f4f7f6; overflow: hidden; }
         
-        .sidebar h2 { 
-            font-size: 1.2em; border-bottom: 1px solid #34495e; 
-            padding-bottom: 20px; text-align: center; 
-            white-space: nowrap; overflow: hidden;
-        }
-
-        .sidebar.collapsed h2 span, 
-        .sidebar.collapsed .menu-item span,
-        .sidebar.collapsed .logout-btn span { display: none; }
-
-        .menu-item {
-            padding: 15px; margin: 5px 0; border-radius: 8px; cursor: pointer;
-            display: flex; align-items: center; white-space: nowrap; transition: 0.3s;
-        }
-
+        .sidebar { width: 260px; background: var(--dark); color: white; display: flex; flex-direction: column; padding: 20px; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; flex-shrink: 0; }
+        .sidebar.collapsed { width: 70px; padding: 20px 10px; }
+        .sidebar h2 { font-size: 1.2em; border-bottom: 1px solid #34495e; padding-bottom: 20px; text-align: center; white-space: nowrap; overflow: hidden; }
+        .sidebar.collapsed h2 span, .sidebar.collapsed .menu-item span, .sidebar.collapsed .logout-btn span { display: none; }
+        
+        .menu-item { padding: 15px; margin: 5px 0; border-radius: 8px; cursor: pointer; display: flex; align-items: center; white-space: nowrap; transition: 0.3s; }
         .menu-item i { min-width: 30px; text-align: center; font-style: normal; font-size: 1.2em; }
         .menu-item:hover { background: #34495e; }
         .menu-item.active { background: var(--primary); }
-
-        .toggle-btn {
-            position: absolute; right: -12px; top: 25px; background: var(--primary);
-            color: white; border: none; border-radius: 50%; width: 24px; height: 24px;
-            cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center;
-        }
-
+        
+        .toggle-btn { position: absolute; right: -12px; top: 25px; background: var(--primary); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .logout-btn { margin-top: auto; background: #e74c3c; padding: 12px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        /* --- CONTEÚDO --- */
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
         .header-home { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -77,7 +34,6 @@
 <body>
 
     <script>
-        // Bloqueia o "pulo" da sidebar antes de renderizar
         if (localStorage.getItem('sidebarStatus') === 'closed') {
             document.write('<style>.sidebar { width: 70px !important; padding: 20px 10px !important; } .sidebar span, .sidebar h2 span { display: none !important; }</style>');
         }
@@ -86,18 +42,9 @@
     <div class="sidebar" id="sidebar">
         <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
         <h2>🚀 <span>Futuro Técnico</span></h2>
-        
-        <div class="menu-item active" onclick="window.location.href='dashboard.html'">
-            <i>🏠</i> <span>Home</span>
-        </div>
-        
-        <div class="menu-item" onclick="window.location.href='selecao-materia.html'">
-            <i>📝</i> <span>Simulados</span>
-        </div>
-
-        <div class="logout-btn" onclick="sair()">
-            <i>🚪</i> <span>Sair</span>
-        </div>
+        <div class="menu-item active" onclick="window.location.href='dashboard.html'"><i>🏠</i> <span>Home</span></div>
+        <div class="menu-item" onclick="window.location.href='selecao-materia.html'"><i>📝</i> <span>Simulados</span></div>
+        <div class="logout-btn" onclick="sair()"><i>🚪</i> <span>Sair</span></div>
     </div>
 
     <div class="main-content">
@@ -109,7 +56,7 @@
         <div class="xp-container" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <strong>Progresso de Experiência</strong>
             <div class="progress-bar" style="background: #e0e0e0; border-radius: 20px; height: 15px; margin: 10px 0; overflow: hidden;">
-                <div class="progress-fill" id="barra-xp" style="background: var(--success); height: 100%; width: 0%;"></div>
+                <div id="barra-xp" class="progress-fill" style="background: var(--success); height: 100%; width: 0%;"></div>
             </div>
             <small id="xp-texto">0 XP total</small>
         </div>
@@ -128,85 +75,78 @@
         </div>
 
         <div class="ranking-card" style="margin-top: 25px;">
-            <h3 style="margin-top: 0;">🏆 Ranking da Turma</h3>
+            <h3>🏆 Ranking da Turma</h3>
             <div id="lista-ranking"></div>
         </div>
     </div>
 
 <script>
-    // 1. FUNÇÃO DA SIDEBAR (Consertada)
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
+        if (!sidebar) return;
         sidebar.classList.toggle('collapsed');
-        const isCollapsed = sidebar.classList.contains('collapsed');
-        localStorage.setItem('sidebarStatus', isCollapsed ? 'closed' : 'open');
+        localStorage.setItem('sidebarStatus', sidebar.classList.contains('collapsed') ? 'closed' : 'open');
     }
 
-    // 2. FUNÇÃO DE DADOS (Consertada)
     function inicializarDashboard() {
-        // Recupera dados do LocalStorage
-        const usuario = localStorage.getItem('usuarioSalvo') || "Estudante";
-        const xp = parseInt(localStorage.getItem('xpUsuario') || "0");
-        const statsRaw = localStorage.getItem('statsUsuario');
-        const stats = statsRaw ? JSON.parse(statsRaw) : {
-            Matematica: { acertos: 0, total: 0 },
-            Portugues: { acertos: 0, total: 0 }
-        };
+        try {
+            // 1. Recuperar Dados
+            const usuario = localStorage.getItem('usuarioSalvo') || "Estudante";
+            const xp = parseInt(localStorage.getItem('xpUsuario') || "0");
+            const statsRaw = localStorage.getItem('statsUsuario');
+            let stats = { Matematica: { acertos: 0, total: 0 }, Portugues: { acertos: 0, total: 0 } };
+            
+            if (statsRaw) stats = JSON.parse(statsRaw);
 
-        // Aplica nome e nível
-        document.getElementById('boas-vindas').innerText = `Olá, ${usuario}! 👋`;
-        const nivel = Math.floor(xp / 100) + 1;
-        document.getElementById('status-nivel').innerText = `Nível ${nivel}`;
-        
-        // Aplica Barra de XP (calcula o resto da divisão por 100 para o progresso do nível atual)
-        const progressoXP = xp % 100;
-        document.getElementById('barra-xp').style.width = progressoXP + "%";
-        document.getElementById('xp-texto').innerText = `${xp} XP total`;
+            // 2. Atualizar UI Básica
+            document.getElementById('boas-vindas').innerText = `Olá, ${usuario}! 👋`;
+            document.getElementById('status-nivel').innerText = `Nível ${Math.floor(xp / 100) + 1}`;
+            document.getElementById('barra-xp').style.width = (xp % 100) + "%";
+            document.getElementById('xp-texto').innerText = `${xp} XP total`;
 
-        // Função interna para calcular porcentagem
-        const calcular = (materia) => {
-            const m = stats[materia];
-            return (m && m.total > 0) ? Math.round((m.acertos / m.total) * 100) : 0;
-        };
+            // 3. Atualizar Barras de Matéria
+            const atualizarMateria = (idBar, idText, dados) => {
+                const perc = dados.total > 0 ? Math.round((dados.acertos / dados.total) * 100) : 0;
+                document.getElementById(idBar).style.width = perc + "%";
+                document.getElementById(idText).innerText = `Acertos: ${perc}% (${dados.acertos} questões)`;
+            };
+            atualizarMateria('bar-mat', 'text-mat', stats.Matematica);
+            atualizarMateria('bar-port', 'text-port', stats.Portugues);
 
-        // Atualiza Gráficos de Matérias
-        const pMat = calcular('Matematica');
-        document.getElementById('bar-mat').style.width = pMat + "%";
-        document.getElementById('text-mat').innerText = `Acertos: ${pMat}% (${stats.Matematica.acertos} questões)`;
+            // 4. Ranking (Onde o erro costuma acontecer)
+            const listaRanking = document.getElementById('lista-ranking');
+            if (listaRanking) {
+                const competidores = [
+                    { nome: "Ana Silva", xp: 550 },
+                    { nome: "Carlos Souza", xp: 420 },
+                    { nome: usuario, xp: xp, voce: true },
+                    { nome: "Beatriz Oliveira", xp: 210 }
+                ].sort((a, b) => b.xp - a.xp);
 
-        const pPort = calcular('Portugues');
-        document.getElementById('bar-port').style.width = pPort + "%";
-        document.getElementById('text-port').innerText = `Acertos: ${pPort}% (${stats.Portugues.acertos} questões)`;
+                listaRanking.innerHTML = competidores.map((c, index) => `
+                    <div class="ranking-item ${c.voce ? 'voce' : ''}">
+                        <span><b>${index + 1}º</b> ${c.nome}</span>
+                        <span>${c.xp} XP</span>
+                    </div>
+                `).join('');
+            }
 
-        // Ranking
-        const listaRanking = document.getElementById('lista-ranking');
-        const competidores = [
-            { nome: "Ana Silva", xp: 550 },
-            { nome: "Carlos Souza", xp: 420 },
-            { nome: usuario, xp: xp, voce: true },
-            { nome: "Beatriz Oliveira", xp: 210 }
-        ].sort((a, b) => b.xp - a.xp);
+            // 5. Sidebar persistente
+            if (localStorage.getItem('sidebarStatus') === 'closed') {
+                document.getElementById('sidebar').classList.add('collapsed');
+            }
 
-        listaRanking.innerHTML = competidores.map((c, index) => `
-            <div class="ranking-item ${c.voce ? 'voce' : ''}">
-                <span><b>${index + 1}º</b> ${c.nome}</span>
-                <span>${c.xp} XP</span>
-            </div>
-        `).join('');
-
-        // Mantém o estado da sidebar no carregamento
-        if (localStorage.getItem('sidebarStatus') === 'closed') {
-            document.getElementById('sidebar').classList.add('collapsed');
+        } catch (error) {
+            console.error("Erro crítico no Dashboard:", error);
         }
     }
+
+    window.onload = inicializarDashboard;
 
     function sair() {
         localStorage.removeItem('usuarioSalvo');
         window.location.href = "index.html";
     }
-
-    // DISPARA TUDO AO CARREGAR
-    window.onload = inicializarDashboard;
 </script>
 </body>
 </html>
