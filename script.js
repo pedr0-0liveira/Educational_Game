@@ -12,7 +12,7 @@ function trocarTela() {
     }
 }
 
-// Função de CADASTRO
+// Função de CADASTRO - CORRIGIDA
 function cadastrar() {
     const user = document.getElementById('cad-user').value;
     const pass = document.getElementById('cad-pass').value;
@@ -22,13 +22,21 @@ function cadastrar() {
         return;
     }
 
+    // Salva as credenciais
     localStorage.setItem('usuarioSalvo', user);
     localStorage.setItem('senhaSalva', pass);
     
-    // Inicializa o XP com 0 caso não exista
-    if (!localStorage.getItem('xpUsuario')) {
-        localStorage.setItem('xpUsuario', '0');
-    }
+    // --- CORREÇÃO: INICIALIZAÇÃO DE DADOS PARA O DASHBOARD ---
+    
+    // 1. Inicializa o XP com 0
+    localStorage.setItem('xpUsuario', '0');
+
+    // 2. Inicializa o Objeto de Estatísticas (Essencial para não travar o Dashboard)
+    const statsIniciais = {
+        Matematica: { acertos: 0, total: 0 },
+        Portugues: { acertos: 0, total: 0 }
+    };
+    localStorage.setItem('statsUsuario', JSON.stringify(statsIniciais));
 
     alert("Cadastro realizado! Agora faça o login.");
     trocarTela();

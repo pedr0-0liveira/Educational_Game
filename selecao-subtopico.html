@@ -83,16 +83,17 @@
     </div>
 
 <script>
-    // --- LÓGICA DA SIDEBAR ---
+    // --- LÓGICA DA SIDEBAR (Padronizada) ---
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
+        if (!sidebar) return;
         sidebar.classList.toggle('collapsed');
-        const isCollapsed = sidebar.classList.contains('collapsed');
-        localStorage.setItem('sidebarStatus', isCollapsed ? 'closed' : 'open');
+        localStorage.setItem('sidebarStatus', sidebar.classList.contains('collapsed') ? 'closed' : 'open');
     }
 
     // --- LÓGICA DOS SUBTÓPICOS ---
     function carregarPagina() {
+        // Recupera a matéria (Ex: Matematica ou Portugues)
         const materiaSelecionada = localStorage.getItem('materiaFiltro');
         
         if (!materiaSelecionada) {
@@ -100,7 +101,9 @@
             return;
         }
 
-        document.getElementById('titulo-materia').innerText = `Subtópicos de ${materiaSelecionada}`;
+        // Traduz para exibição bonita no título
+        const titulos = { 'Matematica': 'Matemática', 'Portugues': 'Português' };
+        document.getElementById('titulo-materia').innerText = `Subtópicos de ${titulos[materiaSelecionada] || materiaSelecionada}`;
 
         const subtopicos = {
             'Matematica': [
@@ -116,8 +119,9 @@
         };
 
         const container = document.getElementById('container-subtopicos');
+        if (!container) return;
+        
         container.innerHTML = ""; 
-
         const lista = subtopicos[materiaSelecionada];
 
         if (lista) {
@@ -131,17 +135,17 @@
                 div.innerHTML = `<h3>${sub.nome}</h3><p>${sub.desc}</p>`;
                 container.appendChild(div);
             });
-        } else {
-            container.innerHTML = "<p>Nenhum subtópico encontrado.</p>";
         }
 
-        // Aplica classe de colapso se necessário no carregamento
+        // Aplica estado da Sidebar
         if (localStorage.getItem('sidebarStatus') === 'closed') {
-            document.getElementById('sidebar').classList.add('collapsed');
+            const sb = document.getElementById('sidebar');
+            if (sb) sb.classList.add('collapsed');
         }
     }
 
-    window.onload = carregarPagina;
+    // Usar addEventListener é mais seguro que window.onload
+    window.addEventListener('load', carregarPagina);
 </script>
 </body>
 </html>
