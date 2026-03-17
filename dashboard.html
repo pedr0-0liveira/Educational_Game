@@ -18,9 +18,10 @@
             display: flex; 
             height: 100vh; 
             background: #f4f7f6;
+            overflow: hidden; /* Evita scroll duplo na página inteira */
         }
 
-        /* --- BARRA LATERAL --- */
+        /* --- BARRA LATERAL (RETRÁTIL) --- */
         .sidebar {
             width: 260px;
             background: var(--dark);
@@ -28,6 +29,14 @@
             display: flex;
             flex-direction: column;
             padding: 20px;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .sidebar.collapsed {
+            width: 70px;
+            padding: 20px 10px;
         }
 
         .sidebar h2 { 
@@ -35,6 +44,14 @@
             border-bottom: 1px solid #34495e; 
             padding-bottom: 20px; 
             text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed h2 span, 
+        .sidebar.collapsed .menu-item span,
+        .sidebar.collapsed .logout-btn span {
+            display: none;
         }
 
         .menu-item {
@@ -45,18 +62,55 @@
             transition: 0.3s;
             display: flex;
             align-items: center;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .menu-item i {
+            min-width: 30px;
+            text-align: center;
+            font-style: normal;
+            font-size: 1.2em;
+        }
+
+        .sidebar.collapsed .menu-item {
+            justify-content: center;
+            padding: 15px 0;
         }
 
         .menu-item:hover { background: #34495e; }
         .menu-item.active { background: var(--primary); }
 
+        .toggle-btn {
+            position: absolute;
+            right: -12px;
+            top: 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
         .logout-btn {
             margin-top: auto;
             background: #e74c3c;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
             border-radius: 5px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
         /* --- CONTEÚDO PRINCIPAL --- */
@@ -66,153 +120,137 @@
             overflow-y: auto;
         }
 
-        .header-home {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        /* --- STATS E CARDS --- */
-        .stats-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .stat-card, .ranking-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
+        /* Mantendo o restante dos seus estilos de cards e ranking... */
+        .header-home { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .stat-card, .ranking-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .bar-bg { background: #eee; height: 10px; border-radius: 5px; margin-top: 10px; }
         .bar-fill { height: 100%; border-radius: 5px; transition: 0.5s; }
-
-        /* --- RANKING --- */
-        .ranking-card { margin-top: 25px; }
-        .ranking-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 10px;
-            border-bottom: 1px solid #eee;
-        }
-        .ranking-item.voce {
-            background: #e7f3ff;
-            font-weight: bold;
-            border-radius: 8px;
-            border-bottom: none;
-        }
+        .ranking-item { display: flex; justify-content: space-between; padding: 12px 10px; border-bottom: 1px solid #eee; }
+        .ranking-item.voce { background: #e7f3ff; font-weight: bold; border-radius: 8px; border-bottom: none; }
         .posicao { width: 35px; color: var(--primary); font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <h2>🚀 Futuro Técnico</h2>
-    <div class="menu-item active" onclick="location.reload()">🏠 Home</div>
-    <div class="menu-item" onclick="window.location.href='selecao-materia.html'">📝 Simulados</div>
-    <div class="logout-btn" onclick="sair()">Sair</div>
-</div>
-
-<div class="main-content">
-    <div class="header-home">
-        <h2 id="boas-vindas">Olá, Estudante!</h2>
-        <div id="status-nivel" style="background: var(--primary); color: white; padding: 5px 15px; border-radius: 20px;">Nível 1</div>
-    </div>
-
-    <div class="xp-container" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <strong>Progresso de Experiência</strong>
-        <div class="progress-bar" style="background: #e0e0e0; border-radius: 20px; height: 15px; margin: 10px 0; overflow: hidden;">
-            <div class="progress-fill" id="barra-xp" style="background: var(--success); height: 100%; width: 0%;"></div>
+    <div class="sidebar" id="sidebar">
+        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+        <h2 id="logo-text">🚀 <span>Futuro Técnico</span></h2>
+        
+        <div class="menu-item active" onclick="window.location.href='dashboard.html'">
+            <i>🏠</i> <span>Home</span>
         </div>
-        <small id="xp-texto">0 XP</small>
-    </div>
-
-    <div class="stats-container">
-        <div class="stat-card">
-            <strong>📊 Matemática</strong>
-            <div class="bar-bg"><div id="bar-mat" class="bar-fill" style="background: #3498db; width: 0%;"></div></div>
-            <small id="text-mat">Acertos: 0%</small>
+        
+        <div class="menu-item" onclick="window.location.href='selecao-materia.html'">
+            <i>📝</i> <span>Simulados</span>
         </div>
-        <div class="stat-card">
-            <strong>📚 Português</strong>
-            <div class="bar-bg"><div id="bar-port" class="bar-fill" style="background: #9b59b6; width: 0%;"></div></div>
-            <small id="text-port">Acertos: 0%</small>
+
+        <div class="logout-btn" onclick="sair()">
+            <i>🚪</i> <span>Sair</span>
         </div>
     </div>
 
-    <div class="ranking-card">
-        <h3 style="margin-top: 0;">🏆 Ranking da Turma</h3>
-        <div id="lista-ranking">
+    <div class="main-content">
+        <div class="header-home">
+            <h2 id="boas-vindas">Olá, Estudante!</h2>
+            <div id="status-nivel" style="background: var(--primary); color: white; padding: 5px 15px; border-radius: 20px;">Nível 1</div>
+        </div>
+
+        <div class="xp-container" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <strong>Progresso de Experiência</strong>
+            <div class="progress-bar" style="background: #e0e0e0; border-radius: 20px; height: 15px; margin: 10px 0; overflow: hidden;">
+                <div class="progress-fill" id="barra-xp" style="background: var(--success); height: 100%; width: 0%;"></div>
             </div>
-    </div>
+            <small id="xp-texto">0 XP</small>
+        </div>
 
-    <h3 style="margin-top: 40px;">Ações Rápidas</h3>
-    <div class="card" onclick="window.location.href='selecao-materia.html'" style="background: white; padding: 25px; border-radius: 12px; text-align: center; cursor: pointer; border-bottom: 5px solid var(--primary); box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s;">
-        <h3 style="margin: 0;">📝 Ir para Simulados</h3>
-        <p style="color: #666; margin-top: 10px;">Escolha uma matéria e comece a treinar.</p>
+        <div class="stats-container">
+            <div class="stat-card">
+                <strong>📊 Matemática</strong>
+                <div class="bar-bg"><div id="bar-mat" class="bar-fill" style="background: #3498db; width: 0%;"></div></div>
+                <small id="text-mat">Acertos: 0%</small>
+            </div>
+            <div class="stat-card">
+                <strong>📚 Português</strong>
+                <div class="bar-bg"><div id="bar-port" class="bar-fill" style="background: #9b59b6; width: 0%;"></div></div>
+                <small id="text-port">Acertos: 0%</small>
+            </div>
+        </div>
+
+        <div class="ranking-card">
+            <h3 style="margin-top: 0;">🏆 Ranking da Turma</h3>
+            <div id="lista-ranking"></div>
+        </div>
+
+        <h3 style="margin-top: 40px;">Ações Rápidas</h3>
+        <div class="card" onclick="window.location.href='selecao-materia.html'" style="background: white; padding: 25px; border-radius: 12px; text-align: center; cursor: pointer; border-bottom: 5px solid var(--primary); box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s;">
+            <h3 style="margin: 0;">📝 Ir para Simulados</h3>
+            <p style="color: #666; margin-top: 10px;">Escolha uma matéria e comece a treinar.</p>
+        </div>
     </div>
-</div>
 
 <script>
-function carregarDashboard() {
-    const usuario = localStorage.getItem('usuarioSalvo') || "Estudante";
-    let xp = parseInt(localStorage.getItem('xpUsuario') || "0");
-    let stats = JSON.parse(localStorage.getItem('statsUsuario')) || {
-        Matematica: { acertos: 0, total: 0 },
-        Portugues: { acertos: 0, total: 0 }
-    };
+    // Suas funções JS permanecem as mesmas, estão ótimas!
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('collapsed');
+        const isCollapsed = sidebar.classList.contains('collapsed');
+        localStorage.setItem('sidebarStatus', isCollapsed ? 'closed' : 'open');
+    }
 
-    // 1. Atualiza Boas-vindas e XP
-    document.getElementById('boas-vindas').innerText = `Olá, ${usuario}! 👋`;
-    let nivel = Math.floor(xp / 100) + 1;
-    document.getElementById('status-nivel').innerText = `Nível ${nivel}`;
-    document.getElementById('barra-xp').style.width = (xp % 100) + "%";
-    document.getElementById('xp-texto').innerText = `${xp} XP total`;
+    window.addEventListener('DOMContentLoaded', () => {
+        const status = localStorage.getItem('sidebarStatus');
+        if (status === 'closed') {
+            document.getElementById('sidebar').classList.add('collapsed');
+        }
+        carregarDashboard();
+    });
 
-    // 2. Gráficos de Desempenho
-    const calcPerc = (materia) => {
-        if (!stats[materia] || stats[materia].total === 0) return 0;
-        return Math.round((stats[materia].acertos / stats[materia].total) * 100);
-    };
+    function carregarDashboard() {
+        const usuario = localStorage.getItem('usuarioSalvo') || "Estudante";
+        let xp = parseInt(localStorage.getItem('xpUsuario') || "0");
+        let stats = JSON.parse(localStorage.getItem('statsUsuario')) || {
+            Matematica: { acertos: 0, total: 0 },
+            Portugues: { acertos: 0, total: 0 }
+        };
 
-    let percMat = calcPerc('Matematica');
-    document.getElementById('bar-mat').style.width = percMat + "%";
-    document.getElementById('text-mat').innerText = `Acertos: ${percMat}% (${stats.Matematica.acertos} questões)`;
+        document.getElementById('boas-vindas').innerText = `Olá, ${usuario}! 👋`;
+        let nivel = Math.floor(xp / 100) + 1;
+        document.getElementById('status-nivel').innerText = `Nível ${nivel}`;
+        document.getElementById('barra-xp').style.width = (xp % 100) + "%";
+        document.getElementById('xp-texto').innerText = `${xp} XP total`;
 
-    let percPort = calcPerc('Portugues');
-    document.getElementById('bar-port').style.width = percPort + "%";
-    document.getElementById('text-port').innerText = `Acertos: ${percPort}% (${stats.Portugues.acertos} questões)`;
+        const calcPerc = (materia) => {
+            if (!stats[materia] || stats[materia].total === 0) return 0;
+            return Math.round((stats[materia].acertos / stats[materia].total) * 100);
+        };
 
-    // 3. Lógica do Ranking
-    const listaRanking = document.getElementById('lista-ranking');
-    const competidores = [
-        { nome: "Ana Silva", xp: 550 },
-        { nome: "Carlos Souza", xp: 420 },
-        { nome: usuario, xp: xp, voce: true },
-        { nome: "Beatriz Oliveira", xp: 210 }
-    ];
+        document.getElementById('bar-mat').style.width = calcPerc('Matematica') + "%";
+        document.getElementById('text-mat').innerText = `Acertos: ${calcPerc('Matematica')}% (${stats.Matematica.acertos} questões)`;
 
-    competidores.sort((a, b) => b.xp - a.xp);
+        document.getElementById('bar-port').style.width = calcPerc('Portugues') + "%";
+        document.getElementById('text-port').innerText = `Acertos: ${calcPerc('Portugues')}% (${stats.Portugues.acertos} questões)`;
 
-    listaRanking.innerHTML = competidores.map((c, index) => `
-        <div class="ranking-item ${c.voce ? 'voce' : ''}">
-            <span><span class="posicao">${index + 1}º</span> ${c.nome}</span>
-            <span>${c.xp} XP</span>
-        </div>
-    `).join('');
-}
+        const listaRanking = document.getElementById('lista-ranking');
+        const competidores = [
+            { nome: "Ana Silva", xp: 550 },
+            { nome: "Carlos Souza", xp: 420 },
+            { nome: usuario, xp: xp, voce: true },
+            { nome: "Beatriz Oliveira", xp: 210 }
+        ].sort((a, b) => b.xp - a.xp);
 
-function sair() {
-    localStorage.removeItem('usuarioSalvo');
-    window.location.href = "index.html";
-}
+        listaRanking.innerHTML = competidores.map((c, index) => `
+            <div class="ranking-item ${c.voce ? 'voce' : ''}">
+                <span><span class="posicao">${index + 1}º</span> ${c.nome}</span>
+                <span>${c.xp} XP</span>
+            </div>
+        `).join('');
+    }
 
-// Inicializa o dashboard ao carregar
-window.onload = carregarDashboard;
+    function sair() {
+        localStorage.removeItem('usuarioSalvo');
+        window.location.href = "index.html";
+    }
 </script>
 </body>
 </html>

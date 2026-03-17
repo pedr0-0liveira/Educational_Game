@@ -1,9 +1,21 @@
-// 1. Variáveis Globais e Configuração Inicial
-const filtro = localStorage.getItem('materiaFiltro');
-const questoesParaExibir = bancoQuestoes.filter(q => q.materia === filtro);
+// 1. Filtros e Preparação
+const materiaFiltro = localStorage.getItem('materiaFiltro');
+const subtopicoFiltro = localStorage.getItem('subtopicoFiltro');
+
+const questoesParaExibir = bancoQuestoes.filter(q => 
+    q.materia === materiaFiltro && q.subtopico === subtopicoFiltro
+);
 
 let questaoAtual = 0;
 let xpTotal = 0;
+
+// PROTEÇÃO: Se não houver questões, volta para a seleção
+if (questoesParaExibir.length === 0) {
+    alert("Nenhuma questão encontrada para este subtópico.");
+    window.location.href = "selecao-subtopico.html";
+} else {
+    carregarQuestao(); // Só inicia se houver questões
+}
 
 // 2. Função para carregar a pergunta na tela
 function carregarQuestao() {
@@ -24,11 +36,10 @@ function carregarQuestao() {
     });
 }
 
-// 3. Função para processar a resposta e salvar estatísticas
+// 3. Função para processar a resposta
 function verificarResposta(escolhida) {
     const q = questoesParaExibir[questaoAtual];
     
-    // Carrega estatísticas ou inicia objeto vazio
     let stats = JSON.parse(localStorage.getItem('statsUsuario')) || {
         Matematica: { acertos: 0, total: 0 },
         Portugues: { acertos: 0, total: 0 }
@@ -59,12 +70,7 @@ function verificarResposta(escolhida) {
 // 4. Finalização
 function finalizarSimulado() {
     alert(`Simulado concluído! Você ganhou ${xpTotal} XP.`);
-    
     let xpAntigo = parseInt(localStorage.getItem('xpUsuario') || "0");
     localStorage.setItem('xpUsuario', xpAntigo + xpTotal);
-    
     window.location.href = "dashboard.html";
 }
-
-// 5. Início imediato
-carregarQuestao();

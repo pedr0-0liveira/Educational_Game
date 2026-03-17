@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Subtópicos - Meu Futuro Técnico</title>
+    <style>
+        :root { --primary: #007bff; --dark: #2c3e50; }
+        body { font-family: 'Segoe UI', sans-serif; display: flex; margin: 0; background: #f4f7f6; height: 100vh; }
+        .sidebar { width: 260px; background: var(--dark); color: white; padding: 20px; }
+        .main-content { flex: 1; padding: 40px; }
+        .grid-subtopicos { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px; }
+        .card-sub { 
+            background: white; padding: 25px; border-radius: 12px; text-align: center; 
+            cursor: pointer; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primary);
+        }
+        .card-sub:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .btn-voltar { background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>🚀 Futuro Técnico</h2>
+    <div onclick="window.location.href='dashboard.html'" style="cursor:pointer; padding:10px;">🏠 Home</div>
+</div>
+
+<div class="main-content">
+    <button class="btn-voltar" onclick="window.location.href='selecao-materia.html'">⬅ Voltar</button>
+    <h2 id="titulo-materia">Subtópicos</h2>
+    <p>Escolha um foco para o seu simulado:</p>
+
+    <div class="grid-subtopicos" id="container-subtopicos">
+        </div>
+</div>
+
+<script>
+    const materiaSelecionada = localStorage.getItem('materiaFiltro');
+    document.getElementById('titulo-materia').innerText = `Subtópicos de ${materiaSelecionada}`;
+
+    const subtopicos = {
+        'Matematica': [
+            { nome: 'Álgebra', desc: 'Equações e Funções' },
+            { nome: 'Geometria', desc: 'Pitágoras e Áreas' },
+            { nome: 'Aritmética', desc: 'Potências e Raízes' }
+        ],
+        'Portugues': [
+            { nome: 'Gramática', desc: 'Análise Sintática' },
+            { nome: 'Interpretação', desc: 'Compreensão de Texto' },
+            { nome: 'Ortografia', desc: 'Acentuação e Escrita' }
+        ]
+    };
+
+    const container = document.getElementById('container-subtopicos');
+    
+    subtopicos[materiaSelecionada].forEach(sub => {
+        const div = document.createElement('div');
+        div.className = 'card-sub';
+        div.onclick = () => iniciarSimulado(sub.nome);
+        div.innerHTML = `
+            <h3>${sub.nome}</h3>
+            <p>${sub.desc}</p>
+        `;
+        container.appendChild(div);
+    });
+
+    function iniciarSimulado(sub) {
+        localStorage.setItem('subtopicoFiltro', sub);
+        window.location.href = 'simulado.html';
+    }
+</script>
+</body>
+</html>
