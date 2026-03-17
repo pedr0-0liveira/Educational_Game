@@ -21,7 +21,7 @@
             overflow: hidden; 
         }
 
-        /* --- BARRA LATERAL (RETRÁTIL) --- */
+        /* --- SIDEBAR RETRÁTIL --- */
         .sidebar {
             width: 260px;
             background: var(--dark);
@@ -29,110 +29,55 @@
             display: flex;
             flex-direction: column;
             padding: 20px;
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             flex-shrink: 0;
         }
 
-        .sidebar.collapsed {
-            width: 70px;
-            padding: 20px 10px;
-        }
-
+        .sidebar.collapsed { width: 70px; padding: 20px 10px; }
+        
         .sidebar h2 { 
-            font-size: 1.2em; 
-            border-bottom: 1px solid #34495e; 
-            padding-bottom: 20px; 
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
+            font-size: 1.2em; border-bottom: 1px solid #34495e; 
+            padding-bottom: 20px; text-align: center; 
+            white-space: nowrap; overflow: hidden;
         }
 
         .sidebar.collapsed h2 span, 
         .sidebar.collapsed .menu-item span,
-        .sidebar.collapsed .logout-btn span {
-            display: none;
-        }
+        .sidebar.collapsed .logout-btn span { display: none; }
 
         .menu-item {
-            padding: 15px;
-            margin: 5px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            overflow: hidden;
-            white-space: nowrap;
+            padding: 15px; margin: 5px 0; border-radius: 8px; cursor: pointer;
+            display: flex; align-items: center; white-space: nowrap; transition: 0.3s;
         }
 
-        .menu-item i {
-            min-width: 30px;
-            text-align: center;
-            font-style: normal;
-            font-size: 1.2em;
-        }
-
-        .sidebar.collapsed .menu-item {
-            justify-content: center;
-            padding: 15px 0;
-        }
-
+        .menu-item i { min-width: 30px; text-align: center; font-style: normal; font-size: 1.2em; }
         .menu-item:hover { background: #34495e; }
         .menu-item.active { background: var(--primary); }
 
         .toggle-btn {
-            position: absolute;
-            right: -12px;
-            top: 25px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8em;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: absolute; right: -12px; top: 25px; background: var(--primary);
+            color: white; border: none; border-radius: 50%; width: 24px; height: 24px;
+            cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center;
         }
 
-        .logout-btn {
-            margin-top: auto;
-            background: #e74c3c;
-            padding: 12px;
-            text-align: center;
-            border-radius: 5px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+        .logout-btn { margin-top: auto; background: #e74c3c; padding: 12px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        /* --- CONTEÚDO PRINCIPAL --- */
-        .main-content {
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-        }
-
+        /* --- CONTEÚDO --- */
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
         .header-home { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .stat-card, .ranking-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .bar-bg { background: #eee; height: 10px; border-radius: 5px; margin-top: 10px; }
-        .bar-fill { height: 100%; border-radius: 5px; transition: 0.5s; }
+        .bar-fill { height: 100%; border-radius: 5px; transition: 0.8s ease-out; }
         .ranking-item { display: flex; justify-content: space-between; padding: 12px 10px; border-bottom: 1px solid #eee; }
-        .ranking-item.voce { background: #e7f3ff; font-weight: bold; border-radius: 8px; border-bottom: none; }
-        .posicao { width: 35px; color: var(--primary); font-weight: bold; }
+        .ranking-item.voce { background: #e7f3ff; font-weight: bold; border-radius: 8px; }
     </style>
 </head>
 <body>
+
     <script>
-        // Previne o "flash" da barra aberta antes de fechar
+        // Bloqueia o "pulo" da sidebar antes de renderizar
         if (localStorage.getItem('sidebarStatus') === 'closed') {
             document.write('<style>.sidebar { width: 70px !important; padding: 20px 10px !important; } .sidebar span, .sidebar h2 span { display: none !important; }</style>');
         }
@@ -140,7 +85,7 @@
     
     <div class="sidebar" id="sidebar">
         <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-        <h2 id="logo-text">🚀 <span>Futuro Técnico</span></h2>
+        <h2>🚀 <span>Futuro Técnico</span></h2>
         
         <div class="menu-item active" onclick="window.location.href='dashboard.html'">
             <i>🏠</i> <span>Home</span>
@@ -157,7 +102,7 @@
 
     <div class="main-content">
         <div class="header-home">
-            <h2 id="boas-vindas">Olá, Estudante!</h2>
+            <h2 id="boas-vindas">Olá!</h2>
             <div id="status-nivel" style="background: var(--primary); color: white; padding: 5px 15px; border-radius: 20px;">Nível 1</div>
         </div>
 
@@ -166,10 +111,10 @@
             <div class="progress-bar" style="background: #e0e0e0; border-radius: 20px; height: 15px; margin: 10px 0; overflow: hidden;">
                 <div class="progress-fill" id="barra-xp" style="background: var(--success); height: 100%; width: 0%;"></div>
             </div>
-            <small id="xp-texto">0 XP</small>
+            <small id="xp-texto">0 XP total</small>
         </div>
 
-        <div class="stats-container">
+        <div class="stats-container" style="margin-top: 20px;">
             <div class="stat-card">
                 <strong>📊 Matemática</strong>
                 <div class="bar-bg"><div id="bar-mat" class="bar-fill" style="background: #3498db; width: 0%;"></div></div>
@@ -182,19 +127,14 @@
             </div>
         </div>
 
-        <div class="ranking-card">
+        <div class="ranking-card" style="margin-top: 25px;">
             <h3 style="margin-top: 0;">🏆 Ranking da Turma</h3>
             <div id="lista-ranking"></div>
-        </div>
-
-        <h3 style="margin-top: 40px;">Ações Rápidas</h3>
-        <div class="card" onclick="window.location.href='selecao-materia.html'" style="background: white; padding: 25px; border-radius: 12px; text-align: center; cursor: pointer; border-bottom: 5px solid var(--primary); box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s;">
-            <h3 style="margin: 0;">📝 Ir para Simulados</h3>
-            <p style="color: #666; margin-top: 10px;">Escolha uma matéria e comece a treinar.</p>
         </div>
     </div>
 
 <script>
+    // 1. FUNÇÃO DA SIDEBAR (Consertada)
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         sidebar.classList.toggle('collapsed');
@@ -202,26 +142,71 @@
         localStorage.setItem('sidebarStatus', isCollapsed ? 'closed' : 'open');
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-        // Aplica a classe caso o status seja fechado
-        if (localStorage.getItem('sidebarStatus') === 'closed') {
-            document.getElementById('sidebar').classList.add('collapsed');
-        }
-        carregarDashboard();
-    });
-
-    function carregarDashboard() {
+    // 2. FUNÇÃO DE DADOS (Consertada)
+    function inicializarDashboard() {
+        // Recupera dados do LocalStorage
         const usuario = localStorage.getItem('usuarioSalvo') || "Estudante";
-        let xp = parseInt(localStorage.getItem('xpUsuario') || "0");
-        let stats = JSON.parse(localStorage.getItem('statsUsuario')) || {
+        const xp = parseInt(localStorage.getItem('xpUsuario') || "0");
+        const statsRaw = localStorage.getItem('statsUsuario');
+        const stats = statsRaw ? JSON.parse(statsRaw) : {
             Matematica: { acertos: 0, total: 0 },
             Portugues: { acertos: 0, total: 0 }
         };
 
+        // Aplica nome e nível
         document.getElementById('boas-vindas').innerText = `Olá, ${usuario}! 👋`;
-        let nivel = Math.floor(xp / 100) + 1;
+        const nivel = Math.floor(xp / 100) + 1;
         document.getElementById('status-nivel').innerText = `Nível ${nivel}`;
-        document.getElementById('barra-xp').style.width = (xp % 100) + "%";
+        
+        // Aplica Barra de XP (calcula o resto da divisão por 100 para o progresso do nível atual)
+        const progressoXP = xp % 100;
+        document.getElementById('barra-xp').style.width = progressoXP + "%";
         document.getElementById('xp-texto').innerText = `${xp} XP total`;
 
-        const calc
+        // Função interna para calcular porcentagem
+        const calcular = (materia) => {
+            const m = stats[materia];
+            return (m && m.total > 0) ? Math.round((m.acertos / m.total) * 100) : 0;
+        };
+
+        // Atualiza Gráficos de Matérias
+        const pMat = calcular('Matematica');
+        document.getElementById('bar-mat').style.width = pMat + "%";
+        document.getElementById('text-mat').innerText = `Acertos: ${pMat}% (${stats.Matematica.acertos} questões)`;
+
+        const pPort = calcular('Portugues');
+        document.getElementById('bar-port').style.width = pPort + "%";
+        document.getElementById('text-port').innerText = `Acertos: ${pPort}% (${stats.Portugues.acertos} questões)`;
+
+        // Ranking
+        const listaRanking = document.getElementById('lista-ranking');
+        const competidores = [
+            { nome: "Ana Silva", xp: 550 },
+            { nome: "Carlos Souza", xp: 420 },
+            { nome: usuario, xp: xp, voce: true },
+            { nome: "Beatriz Oliveira", xp: 210 }
+        ].sort((a, b) => b.xp - a.xp);
+
+        listaRanking.innerHTML = competidores.map((c, index) => `
+            <div class="ranking-item ${c.voce ? 'voce' : ''}">
+                <span><b>${index + 1}º</b> ${c.nome}</span>
+                <span>${c.xp} XP</span>
+            </div>
+        `).join('');
+
+        // Mantém o estado da sidebar no carregamento
+        if (localStorage.getItem('sidebarStatus') === 'closed') {
+            document.getElementById('sidebar').classList.add('collapsed');
+        }
+    }
+
+    function sair() {
+        localStorage.removeItem('usuarioSalvo');
+        window.location.href = "index.html";
+    }
+
+    // DISPARA TUDO AO CARREGAR
+    window.onload = inicializarDashboard;
+</script>
+</body>
+</html>
