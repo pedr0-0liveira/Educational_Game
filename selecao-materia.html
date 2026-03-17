@@ -9,7 +9,6 @@
             --primary: #007bff;
             --dark: #2c3e50;
             --light: #ecf0f1;
-            --success: #28a745;
         }
 
         body { 
@@ -18,9 +17,10 @@
             display: flex; 
             height: 100vh; 
             background: #f4f7f6;
+            overflow: hidden;
         }
 
-        /* --- SIDEBAR REAPROVEITADA --- */
+        /* --- SIDEBAR ATUALIZADA (RETRÁTIL) --- */
         .sidebar {
             width: 260px;
             background: var(--dark);
@@ -28,110 +28,79 @@
             display: flex;
             flex-direction: column;
             padding: 20px;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
             flex-shrink: 0;
         }
 
-        .sidebar h2 { 
-            font-size: 1.2em; 
-            border-bottom: 1px solid #34495e; 
-            padding-bottom: 20px; 
-            text-align: center;
-        }
+        .sidebar.collapsed { width: 70px; padding: 20px 10px; }
+        .sidebar.collapsed h2 span, .sidebar.collapsed .menu-item span { display: none; }
+
+        .sidebar h2 { font-size: 1.2em; border-bottom: 1px solid #34495e; padding-bottom: 20px; text-align: center; white-space: nowrap; overflow: hidden; }
 
         .menu-item {
-            padding: 15px;
-            margin: 5px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
+            padding: 15px; margin: 5px 0; border-radius: 8px; cursor: pointer;
+            display: flex; align-items: center; white-space: nowrap; transition: 0.3s;
         }
-
+        .menu-item i { min-width: 30px; text-align: center; font-style: normal; }
         .menu-item:hover { background: #34495e; }
         .menu-item.active { background: var(--primary); }
 
+        .toggle-btn {
+            position: absolute; right: -12px; top: 25px; background: var(--primary);
+            color: white; border: none; border-radius: 50%; width: 24px; height: 24px;
+            cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center;
+        }
+
         .logout-btn {
-            margin-top: auto;
-            background: #e74c3c;
-            padding: 10px;
-            text-align: center;
-            border-radius: 5px;
-            cursor: pointer;
+            margin-top: auto; background: #e74c3c; padding: 12px; text-align: center; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
 
         /* --- CONTEÚDO --- */
-        .main-content {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-        }
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .grid-selecao { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 40px; max-width: 1000px; }
 
-        .grid-selecao {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 40px;
-            max-width: 1000px;
-        }
-
-        /* --- CARDS DE MATÉRIA ESTILIZADOS --- */
         .card-materia {
-            background: white;
-            padding: 40px 20px;
-            border-radius: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            border-bottom: 8px solid var(--primary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: white; padding: 40px 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-bottom: 8px solid var(--primary); display: flex; flex-direction: column; align-items: center;
         }
-
-        .card-materia:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
-        }
-
-        .card-materia h3 { 
-            font-size: 1.8em; 
-            margin: 15px 0 10px 0; 
-            color: var(--dark);
-        }
-
-        .card-materia p {
-            color: #666;
-            margin: 0;
-            font-size: 0.95em;
-        }
-
-        .icon-materia {
-            font-size: 3em;
-        }
+        .card-materia:hover { transform: translateY(-10px); box-shadow: 0 12px 20px rgba(0,0,0,0.1); }
+        .card-materia h3 { font-size: 1.8em; margin: 15px 0 10px 0; color: var(--dark); }
+        .icon-materia { font-size: 3em; }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>🚀 Futuro Técnico</h2>
-        <div class="menu-item" onclick="window.location.href='dashboard.html'">🏠 Home</div>
-        <div class="menu-item active">📝 Simulados</div>
-        <div class="logout-btn" onclick="sair()">Sair</div>
+    <script>
+        if (localStorage.getItem('sidebarStatus') === 'closed') {
+            document.write('<style>.sidebar { width: 70px !important; padding: 20px 10px !important; } .sidebar span, .sidebar h2 span { display: none !important; }</style>');
+        }
+    </script>
+
+    <div class="sidebar" id="sidebar">
+        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+        <h2>🚀 <span>Futuro Técnico</span></h2>
+        <div class="menu-item" onclick="window.location.href='dashboard.html'">
+            <i>🏠</i> <span>Home</span>
+        </div>
+        <div class="menu-item active">
+            <i>📝</i> <span>Simulados</span>
+        </div>
+        <div class="logout-btn" onclick="sair()">
+            <i>🚪</i> <span>Sair</span>
+        </div>
     </div>
 
     <div class="main-content">
         <h2 style="color: var(--dark); font-size: 2em; margin-bottom: 10px;">O que vamos estudar hoje?</h2>
-        <p style="color: #666;">Selecione uma disciplina para iniciar o simulado:</p>
+        <p style="color: #666;">Selecione uma disciplina para ver os tópicos:</p>
 
         <div class="grid-selecao">
-            <div class="card-materia" onclick="iniciarSimulado('Matematica')" style="border-color: #3498db;">
+            <div class="card-materia" onclick="escolherMateria('Matematica')" style="border-color: #3498db;">
                 <span class="icon-materia">📐</span>
                 <h3>Matemática</h3>
                 <p>Geometria, Álgebra e Lógica</p>
             </div>
 
-            <div class="card-materia" onclick="iniciarSimulado('Portugues')" style="border-color: #9b59b6;">
+            <div class="card-materia" onclick="escolherMateria('Portugues')" style="border-color: #9b59b6;">
                 <span class="icon-materia">📚</span>
                 <h3>Português</h3>
                 <p>Gramática e Interpretação de Texto</p>
@@ -140,15 +109,31 @@
     </div>
 
     <script>
-        function iniciarSimulado(materia) {
+        // Função para manter a barra no estado correto
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            localStorage.setItem('sidebarStatus', isCollapsed ? 'closed' : 'open');
+        }
+
+        // CORREÇÃO: Agora envia para a página de subtópicos em vez do simulado direto
+        function escolherMateria(materia) {
             localStorage.setItem('materiaFiltro', materia);
-            window.location.href = "simulado.html";
+            window.location.href = "selecao-subtopico.html"; // Redirecionamento correto
         }
         
         function sair() {
             localStorage.removeItem('usuarioSalvo');
             window.location.href = "index.html";
         }
+
+        // Aplica o estado da sidebar no carregamento
+        window.onload = () => {
+            if (localStorage.getItem('sidebarStatus') === 'closed') {
+                document.getElementById('sidebar').classList.add('collapsed');
+            }
+        };
     </script>
 </body>
 </html>
