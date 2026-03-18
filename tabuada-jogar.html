@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Desafio da Tabuada</title>
+    <style>
+        :root { --primary: #58cc02; --dark: #2c3e50; --wrong: #ff4b4b; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        
+        .game-container { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center; }
+        
+        .progresso { color: #888; margin-bottom: 10px; font-weight: bold; }
+        .pergunta-box { font-size: 3.5em; font-weight: bold; color: var(--dark); margin: 20px 0; }
+        
+        .opcoes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .btn-opcao { 
+            padding: 15px; font-size: 1.5em; border: 2px solid #eee; border-radius: 12px; 
+            background: white; cursor: pointer; transition: 0.2s; font-weight: bold; color: var(--dark);
+        }
+        .btn-opcao:hover { background: #f0f0f0; border-color: #ccc; }
+        .correta { background: var(--primary) !important; color: white !important; border-color: var(--primary) !important; }
+        .errada { background: var(--wrong) !important; color: white !important; border-color: var(--wrong) !important; }
+        
+        .btn-voltar { margin-top: 25px; background: none; border: none; color: #888; cursor: pointer; text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="tela-jogo">
+        <div class="progresso" id="info-progresso">Questão 1 de 10</div>
+        <div class="pergunta-box" id="conta">7 x 8</div>
+        
+        <div class="opcoes-grid" id="opcoes">
+            </div>
+        
+        <button class="btn-voltar" onclick="window.location.href='tabuada-inicio.html'">Desistir</button>
+    </div>
+
+    <script>
+        let questaoAtual = 1;
+        let acertos = 0;
+        let respostaCorreta;
+
+        function gerarPergunta() {
+            if (questaoAtual > 10) {
+                finalizarJogo();
+                return;
+            }
+
+            document.getElementById('info-progresso').innerText = `Questão ${questaoAtual} de 10`;
+            
+            // Gera dois números aleatórios de 1 a 10
+            const n1 = Math.floor(Math.random() * 10) + 1;
+            const n2 = Math.floor(Math.random() * 10) + 1;
+            respostaCorreta = n1 * n2;
+
+            document.getElementById('conta').innerText = `${n1} x ${n2}`;
+
+            // Criar lista de opções (1 correta + 3 erradas)
+            let opcoes = [respostaCorreta];
+            while (opcoes.length < 4) {
+                // Gera números próximos ao resultado para dificultar
+                let erro = respostaCorreta + (Math.floor(Math.random() * 11) - 5);
+                if (erro > 0 && !opcoes.includes(erro)) {
+                    opcoes.push(erro);
+                }
+            }
+
+            // Embaralhar opções
+            opcoes.sort(() => Math.random() - 0.5);
+
+            const containerOpcoes = document.getElementById('opcoes');
+            containerOpcoes.innerHTML = "";
+            
+            opcoes.forEach(valor => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-opcao';
+                btn.innerText = valor;
+                btn.onclick = () => verificarResposta(valor, btn);
+                containerOpcoes.appendChild(btn);
+            });
+        }
+
+        function verificarResposta(escolha, btn) {
+            const botoes = document.querySelectorAll('.btn-opcao');
+            botoes.forEach(b => b.style.pointerEvents = 'none'); // Trava cliques
+
+            if (escolha === respostaCorreta) {
+                acertos++;
+                btn.classList.add('correta');
+            } else {
+                btn.classList.add('errada');
+                // Mostra a correta para o aluno aprender
+                botoes.forEach(b => {
+                    if (parseInt(b.innerText) === respostaCorreta) b.classList.add('correta');
+                });
+            }
+
+            setTimeout(() => {
+                questaoAtual++;
+                gerarPergunta();
+            }, 1000);
+        }
+
+        function finalizarJogo() {
+            const xpGanho = acertos * 5;
+            
+            // Salva o XP no sistema global do seu projeto
+            let xpTotal = parseInt(localStorage.getItem('xpUsuario') || "0");
+            localStorage.setItem('xpUsuario', (xpTotal + xpGanho).toString());
+
+            document.getElementById('tela-jogo').innerHTML = `
+                <h2>Fim de Jogo!</h2>
+                <p style="font-size: 1.2em">Você acertou <strong>${acertos}</strong> de 10.</p>
+                <div style="background: #f8fff0; padding: 15px; border-radius: 10px; color: #46a302; margin: 20px 0;">
+                    ⭐ Ganhou <strong>${xpGanho} XP</strong>
+                </div>
+                <button onclick="window.location.href='tabuada-inicio.html'" style="padding: 10px 20px; cursor:pointer">Voltar</button>
+            `;
+        }
+
+        // Inicia o jogo ao carregar
+        gerarPergunta();
+    </script>
+</body>
+</html>

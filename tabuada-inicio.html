@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabuada - Escolha</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; }
+        .opcoes { display: flex; gap: 20px; margin-top: 30px; }
+        .card { 
+            flex: 1; padding: 30px; border-radius: 15px; cursor: pointer; 
+            transition: 0.3s; border: 2px solid #eee; min-width: 200px;
+        }
+        .aprender { border-color: #3498db; color: #3498db; }
+        .aprender:hover { background: #3498db; color: white; }
+        .jogar { border-color: #58cc02; color: #58cc02; }
+        .jogar:hover { background: #58cc02; color: white; }
+        .card i { font-size: 40px; display: block; margin-bottom: 10px; font-style: normal; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>O que vamos fazer hoje?</h1>
+        <div class="opcoes">
+            <div class="card aprender" onclick="window.location.href='tabuada-aprender.html'">
+                <i>📖</i>
+                <strong>Aprender</strong>
+                <p>Estudar as tabelas de 1 a 10</p>
+            </div>
+            <div class="card jogar" onclick="window.location.href='tabuada-jogar.html'">
+                <i>🎮</i>
+                <strong>Jogar</strong>
+                <p>Teste seus conhecimentos</p>
+            </div>
+        </div>
+        <br>
+        <button onclick="window.location.href='dashboard.html'">Voltar ao Início</button>
+    </div>
+</body>
+</html>
