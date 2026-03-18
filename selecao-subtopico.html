@@ -1,69 +1,111 @@
-// --- OBJETO DAS TRILHAS (Sincronizado com questoes.js) ---
-    const trilhas = {
-        "Matematica": [
-            { id: 1, nome: "Números", subtopico: "Sistema Decimal e Romano", xpNecessario: 0, icone: "🔢" },
-            { id: 2, nome: "Operações", subtopico: "Naturais e Decimais", xpNecessario: 50, icone: "➕" },
-            { id: 3, nome: "Frações", subtopico: "Frações", xpNecessario: 120, icone: "🍕" },
-            { id: 4, nome: "Aritmética", subtopico: "Múltiplos e Divisores", xpNecessario: 200, icone: "✖️" },
-            { id: 5, nome: "Medidas", subtopico: "Grandezas e Medidas", xpNecessario: 300, icone: "📏" },
-            { id: 6, nome: "Proporção", subtopico: "Razão e Proporção", xpNecessario: 420, icone: "⚖️" },
-            { id: 7, nome: "Geometria I", subtopico: "Geometria Plana", xpNecessario: 550, icone: "📐" },
-            { id: 8, nome: "Geometria II", subtopico: "Sólidos", xpNecessario: 700, icone: "📦" },
-            { id: 9, nome: "Gráficos", subtopico: "Tratamento da Informação", xpNecessario: 850, icone: "📊" },
-            { id: 10, nome: "Lógica", subtopico: "Raciocínio Lógico", xpNecessario: 1000, icone: "💡" }
-        ],
-        "Portugues": [
-            { id: 1, nome: "Acentuação", subtopico: "Acentuação Gráfica", xpNecessario: 0, icone: "✍️" },
-            { id: 2, nome: "Ortografia", subtopico: "Ortografia", xpNecessario: 50, icone: "📖" },
-            { id: 3, nome: "Pontuação", subtopico: "Pontuação", xpNecessario: 120, icone: "逗" },
-            { id: 4, nome: "Morfologia I", subtopico: "Classes de Palavras", xpNecessario: 200, icone: "🏷️" },
-            { id: 5, nome: "Morfologia II", subtopico: "Verbos", xpNecessario: 300, icone: "🏃" },
-            { id: 6, nome: "Sintaxe I", subtopico: "Termos da Oração", xpNecessario: 420, icone: "🏗️" },
-            { id: 7, nome: "Sintaxe II", subtopico: "Adjuntos e Vocativo", xpNecessario: 550, icone: "🔗" },
-            { id: 8, nome: "Concordância", subtopico: "Concordância e Regência", xpNecessario: 700, icone: "🤝" },
-            { id: 9, nome: "Semântica", subtopico: "Semântica", xpNecessario: 850, icone: "🔍" },
-            { id: 10, nome: "Estilística", subtopico: "Figuras de Linguagem", xpNecessario: 1000, icone: "🎨" }
-        ]
-    };
-
-    function carregarPagina() {
-        const materia = localStorage.getItem('materiaFiltro') || "Matematica";
-        const xpUsuario = parseInt(localStorage.getItem('xpUsuario') || "0");
-        const titulos = { 'Matematica': 'Matemática', 'Portugues': 'Português' };
-        
-        document.getElementById('titulo-materia').innerText = `Trilha de ${titulos[materia]}`;
-
-        const container = document.getElementById('container-trilha');
-        container.innerHTML = "";
-
-        trilhas[materia].forEach(nivel => {
-            // Alterado de nivel.xp para nivel.xpNecessario
-            const liberado = xpUsuario >= nivel.xpNecessario;
-            
-            const div = document.createElement('div');
-            div.className = `nivel-item ${liberado ? 'liberado' : 'bloqueado'}`;
-            
-            div.innerHTML = `
-                <div class="circulo" title="${liberado ? 'Clique para estudar' : 'Bloqueado: requer ' + nivel.xpNecessario + ' XP'}">
-                    ${liberado ? nivel.icone : '🔒'}
-                </div>
-                <div class="label-nivel">${nivel.nome}</div>
-                <div class="desc-nivel">${nivel.subtopico}</div>
-            `;
-
-            if (liberado) {
-                div.querySelector('.circulo').onclick = () => {
-                    // Alterado de nivel.sub para nivel.subtopico
-                    localStorage.setItem('subtopicoFiltro', nivel.subtopico);
-                    window.location.href = 'simulado.html';
-                };
-            }
-
-            container.appendChild(div);
-        });
-
-        // Aplica o estado da sidebar salvo
-        if (localStorage.getItem('sidebarStatus') === 'closed') {
-            document.getElementById('sidebar').classList.add('collapsed');
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Trilha de Estudo - Futuro Técnico</title>
+    <style>
+        /* O CSS deve ficar entre as tags <style> */
+        :root { 
+            --primary: #58cc02; 
+            --primary-dark: #46a302;
+            --dark: #2c3e50; 
+            --locked: #e5e5e5;
+            --locked-text: #afafaf;
         }
-    }
+        body { font-family: 'Segoe UI', sans-serif; display: flex; margin: 0; background: #f4f7f6; height: 100vh; }
+        
+        .sidebar { width: 260px; background: var(--dark); color: white; display: flex; flex-direction: column; padding: 20px; transition: 0.3s; position: relative; }
+        .sidebar.collapsed { width: 70px; padding: 20px 10px; }
+        .sidebar.collapsed span, .sidebar.collapsed h2 span { display: none; }
+        
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        
+        .trilha-mapa { display: flex; flex-direction: column; align-items: center; gap: 40px; margin-top: 30px; padding-bottom: 50px; width: 100%; max-width: 500px; }
+
+        .nivel-item { position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .circulo {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: white; border: 5px solid var(--locked);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 28px; cursor: pointer; transition: 0.3s; z-index: 2;
+        }
+
+        .nivel-item.liberado .circulo { border-color: var(--primary); background: var(--primary); color: white; }
+        .nivel-item.bloqueado .circulo { background: var(--locked); color: var(--locked-text); cursor: not-allowed; }
+
+        /* Linha que liga os círculos */
+        .nivel-item:not(:last-child)::after {
+            content: ''; position: absolute; top: 80px; width: 6px; height: 45px;
+            background: var(--locked); z-index: 1;
+        }
+        .nivel-item.liberado:not(:last-child)::after { background: var(--primary); }
+        
+        .label-nivel { margin-top: 8px; font-weight: bold; color: var(--dark); }
+        .btn-voltar { align-self: flex-start; padding: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <h2 onclick="toggleSidebar()" style="cursor:pointer">🚀 <span>Menu</span></h2>
+        <div onclick="window.location.href='dashboard.html'" style="cursor:pointer; padding:10px">🏠 <span>Home</span></div>
+    </div>
+
+    <div class="main-content">
+        <button class="btn-voltar" onclick="window.location.href='selecao-materia.html'">⬅ Voltar</button>
+        <h2 id="titulo-materia">Trilha de Estudo</h2>
+        
+        <div class="trilha-mapa" id="container-trilha"></div>
+    </div>
+
+    <script>
+        const trilhas = {
+            "Matematica": [
+                { id: 1, nome: "Números", subtopico: "Sistema Decimal e Romano", xpNecessario: 0, icone: "🔢" },
+                { id: 2, nome: "Operações", subtopico: "Naturais e Decimais", xpNecessario: 50, icone: "➕" },
+                { id: 3, nome: "Frações", subtopico: "Frações", xpNecessario: 120, icone: "🍕" }
+            ],
+            "Portugues": [
+                { id: 1, nome: "Acentuação", subtopico: "Acentuação Gráfica", xpNecessario: 0, icone: "✍️" },
+                { id: 2, nome: "Ortografia", subtopico: "Ortografia", xpNecessario: 50, icone: "📖" }
+            ]
+        };
+
+        function carregarPagina() {
+            const materia = localStorage.getItem('materiaFiltro') || "Matematica";
+            const xpUsuario = parseInt(localStorage.getItem('xpUsuario') || "0");
+            
+            document.getElementById('titulo-materia').innerText = `Trilha de ${materia}`;
+            const container = document.getElementById('container-trilha');
+            container.innerHTML = "";
+
+            if (!trilhas[materia]) return;
+
+            trilhas[materia].forEach(nivel => {
+                const liberado = xpUsuario >= nivel.xpNecessario;
+                const div = document.createElement('div');
+                div.className = `nivel-item ${liberado ? 'liberado' : 'bloqueado'}`;
+                
+                div.innerHTML = `
+                    <div class="circulo">${liberado ? nivel.icone : '🔒'}</div>
+                    <div class="label-nivel">${nivel.nome}</div>
+                `;
+
+                if (liberado) {
+                    div.onclick = () => {
+                        localStorage.setItem('subtopicoFiltro', nivel.subtopico);
+                        window.location.href = 'simulado.html';
+                    };
+                }
+                container.appendChild(div);
+            });
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+
+        window.onload = carregarPagina;
+    </script>
+</body>
+</html>
