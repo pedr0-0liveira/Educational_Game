@@ -2,53 +2,163 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trilha de Estudo - Futuro Técnico</title>
     <style>
-        /* O CSS deve ficar entre as tags <style> */
         :root { 
             --primary: #58cc02; 
             --primary-dark: #46a302;
             --dark: #2c3e50; 
             --locked: #e5e5e5;
             --locked-text: #afafaf;
+            --bg: #f4f7f6;
+            --white: #ffffff;
         }
-        body { font-family: 'Segoe UI', sans-serif; display: flex; margin: 0; background: #f4f7f6; height: 100vh; }
+
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            display: flex; 
+            margin: 0; 
+            background: var(--bg); 
+            height: 100vh; 
+        }
         
-        .sidebar { width: 260px; background: var(--dark); color: white; display: flex; flex-direction: column; padding: 20px; transition: 0.3s; position: relative; }
+        /* --- SIDEBAR --- */
+        .sidebar { 
+            width: 260px; 
+            background: var(--dark); 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            padding: 20px; 
+            transition: 0.3s; 
+            position: relative; 
+            flex-shrink: 0;
+        }
         .sidebar.collapsed { width: 70px; padding: 20px 10px; }
         .sidebar.collapsed span, .sidebar.collapsed h2 span { display: none; }
         
-        .main-content { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
-        
-        .trilha-mapa { display: flex; flex-direction: column; align-items: center; gap: 40px; margin-top: 30px; padding-bottom: 50px; width: 100%; max-width: 500px; }
+        .menu-item { 
+            padding: 12px; 
+            margin: 5px 0; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            transition: 0.2s;
+        }
+        .menu-item:hover { background: #34495e; }
 
-        .nivel-item { position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; }
-        .circulo {
-            width: 80px; height: 80px; border-radius: 50%;
-            background: white; border: 5px solid var(--locked);
-            display: flex; justify-content: center; align-items: center;
-            font-size: 28px; cursor: pointer; transition: 0.3s; z-index: 2;
+        /* --- CONTEÚDO PRINCIPAL --- */
+        .main-content { 
+            flex: 1; 
+            padding: 40px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        
+        .trilha-mapa { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 15px; 
+            margin-top: 30px; 
+            padding-bottom: 50px; 
+            width: 100%; 
+            max-width: 650px; /* Mais largo para o formato retangular */
         }
 
-        .nivel-item.liberado .circulo { border-color: var(--primary); background: var(--primary); color: white; }
-        .nivel-item.bloqueado .circulo { background: var(--locked); color: var(--locked-text); cursor: not-allowed; }
-
-        /* Linha que liga os círculos */
-        .nivel-item:not(:last-child)::after {
-            content: ''; position: absolute; top: 80px; width: 6px; height: 45px;
-            background: var(--locked); z-index: 1;
+        /* --- NOVOS BOTÕES RETANGULARES --- */
+        .nivel-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            background: var(--white);
+            border-radius: 15px;
+            padding: 18px 25px;
+            box-shadow: 0 4px 0px rgba(0,0,0,0.05);
+            border: 2px solid var(--locked);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            box-sizing: border-box;
         }
-        .nivel-item.liberado:not(:last-child)::after { background: var(--primary); }
-        
-        .label-nivel { margin-top: 8px; font-weight: bold; color: var(--dark); }
-        .btn-voltar { align-self: flex-start; padding: 10px; cursor: pointer; }
+
+        /* Estado Liberado */
+        .nivel-item.liberado {
+            border-color: var(--primary);
+            color: var(--dark);
+        }
+        .nivel-item.liberado:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 0px var(--primary-dark);
+            background-color: #f9fff3;
+        }
+        .nivel-item.liberado:active {
+            transform: translateY(0px);
+            box-shadow: 0 2px 0px var(--primary-dark);
+        }
+
+        /* Estado Bloqueado */
+        .nivel-item.bloqueado {
+            background: var(--locked);
+            border-color: #dcdcdc;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        /* Ícone redondo dentro do retângulo */
+        .icone-box {
+            width: 50px;
+            height: 50px;
+            background: var(--bg);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        .liberado .icone-box { background: var(--primary); color: white; }
+        .bloqueado .icone-box { color: var(--locked-text); }
+
+        /* Textos */
+        .info-box { flex-grow: 1; }
+        .label-nivel { 
+            font-weight: bold; 
+            font-size: 1.1em; 
+            display: block;
+            margin-bottom: 2px;
+        }
+        .desc-nivel { 
+            font-size: 0.85em; 
+            color: #777; 
+            display: block;
+        }
+
+        /* Indicador de Cadeado / XP */
+        .status-badge {
+            font-size: 0.8em;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin-left: 10px;
+        }
+        .bloqueado .status-badge { background: #cfcfcf; color: white; }
+
+        .btn-voltar { align-self: flex-start; padding: 10px 20px; cursor: pointer; border-radius: 8px; border: none; background: #ddd; margin-bottom: 20px; font-weight: bold; }
+        .btn-voltar:hover { background: #ccc; }
     </style>
 </head>
 <body>
 
     <div class="sidebar" id="sidebar">
         <h2 onclick="toggleSidebar()" style="cursor:pointer">🚀 <span>Menu</span></h2>
-        <div onclick="window.location.href='dashboard.html'" style="cursor:pointer; padding:10px">🏠 <span>Home</span></div>
+        <div class="menu-item" onclick="window.location.href='dashboard.html'">🏠 <span>Home</span></div>
+        <div class="menu-item" onclick="window.location.href='selecao-materia.html'">⬅️ <span>Sair</span></div>
     </div>
 
     <div class="main-content">
@@ -63,32 +173,54 @@
             "Matematica": [
                 { id: 1, nome: "Números", subtopico: "Sistema Decimal e Romano", xpNecessario: 0, icone: "🔢" },
                 { id: 2, nome: "Operações", subtopico: "Naturais e Decimais", xpNecessario: 50, icone: "➕" },
-                { id: 3, nome: "Frações", subtopico: "Frações", xpNecessario: 120, icone: "🍕" }
+                { id: 3, nome: "Frações", subtopico: "Frações", xpNecessario: 120, icone: "🍕" },
+                { id: 4, nome: "Aritmética", subtopico: "Múltiplos e Divisores", xpNecessario: 200, icone: "✖️" },
+                { id: 5, nome: "Medidas", subtopico: "Grandezas e Medidas", xpNecessario: 300, icone: "📏" },
+                { id: 6, nome: "Proporção", subtopico: "Razão e Proporção", xpNecessario: 420, icone: "⚖️" },
+                { id: 7, nome: "Geometria I", subtopico: "Geometria Plana", xpNecessario: 550, icone: "📐" },
+                { id: 8, nome: "Geometria II", subtopico: "Sólidos", xpNecessario: 700, icone: "📦" },
+                { id: 9, nome: "Gráficos", subtopico: "Tratamento da Informação", xpNecessario: 850, icone: "📊" },
+                { id: 10, nome: "Lógica", subtopico: "Raciocínio Lógico", xpNecessario: 1000, icone: "💡" }
             ],
             "Portugues": [
                 { id: 1, nome: "Acentuação", subtopico: "Acentuação Gráfica", xpNecessario: 0, icone: "✍️" },
-                { id: 2, nome: "Ortografia", subtopico: "Ortografia", xpNecessario: 50, icone: "📖" }
+                { id: 2, nome: "Ortografia", subtopico: "Ortografia", xpNecessario: 50, icone: "📖" },
+                { id: 3, nome: "Pontuação", subtopico: "Pontuação", xpNecessario: 120, icone: "逗" },
+                { id: 4, nome: "Morfologia I", subtopico: "Classes de Palavras", xpNecessario: 200, icone: "🏷️" },
+                { id: 5, nome: "Morfologia II", subtopico: "Verbos", xpNecessario: 300, icone: "🏃" },
+                { id: 6, nome: "Sintaxe I", subtopico: "Termos da Oração", xpNecessario: 420, icone: "🏗️" },
+                { id: 7, nome: "Sintaxe II", subtopico: "Adjuntos e Vocativo", xpNecessario: 550, icone: "🔗" },
+                { id: 8, nome: "Concordância", subtopico: "Concordância e Regência", xpNecessario: 700, icone: "🤝" },
+                { id: 9, nome: "Semântica", subtopico: "Semântica", xpNecessario: 850, icone: "🔍" },
+                { id: 10, nome: "Estilística", subtopico: "Figuras de Linguagem", xpNecessario: 1000, icone: "🎨" }
             ]
         };
 
         function carregarPagina() {
             const materia = localStorage.getItem('materiaFiltro') || "Matematica";
             const xpUsuario = parseInt(localStorage.getItem('xpUsuario') || "0");
+            const titulos = { 'Matematica': 'Matemática', 'Portugues': 'Português' };
             
-            document.getElementById('titulo-materia').innerText = `Trilha de ${materia}`;
+            document.getElementById('titulo-materia').innerText = `Trilha de ${titulos[materia]}`;
+
             const container = document.getElementById('container-trilha');
             container.innerHTML = "";
 
-            if (!trilhas[materia]) return;
-
             trilhas[materia].forEach(nivel => {
                 const liberado = xpUsuario >= nivel.xpNecessario;
+                
                 const div = document.createElement('div');
                 div.className = `nivel-item ${liberado ? 'liberado' : 'bloqueado'}`;
                 
                 div.innerHTML = `
-                    <div class="circulo">${liberado ? nivel.icone : '🔒'}</div>
-                    <div class="label-nivel">${nivel.nome}</div>
+                    <div class="icone-box">
+                        ${liberado ? nivel.icone : '🔒'}
+                    </div>
+                    <div class="info-box">
+                        <span class="label-nivel">${nivel.nome}</span>
+                        <span class="desc-nivel">${nivel.subtopico}</span>
+                    </div>
+                    ${!liberado ? `<span class="status-badge">${nivel.xpNecessario} XP</span>` : ''}
                 `;
 
                 if (liberado) {
@@ -97,6 +229,7 @@
                         window.location.href = 'simulado.html';
                     };
                 }
+
                 container.appendChild(div);
             });
         }
