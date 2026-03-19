@@ -6,166 +6,97 @@
     <title>Trilha de Estudo - Futuro Técnico</title>
     <style>
         :root { 
-            --primary: #58cc02; 
-            --primary-dark: #46a302;
-            --dark: #2c3e50; 
-            --locked: #e5e5e5;
-            --locked-text: #afafaf;
-            --bg: #f4f7f6;
-            --white: #ffffff;
+            --primary: #58cc02; --primary-dark: #46a302; --dark: #2c3e50; 
+            --locked: #e5e5e5; --locked-text: #afafaf; --bg: #f4f7f6; --white: #ffffff;
+            --wrong: #ff4b4b;
         }
 
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            display: flex; 
-            margin: 0; 
-            background: var(--bg); 
-            height: 100vh; 
-        }
+        body { font-family: 'Segoe UI', sans-serif; display: flex; margin: 0; background: var(--bg); height: 100vh; overflow: hidden; }
         
         /* --- SIDEBAR --- */
-        .sidebar { 
-            width: 260px; 
-            background: var(--dark); 
-            color: white; 
-            display: flex; 
-            flex-direction: column; 
-            padding: 20px; 
-            transition: 0.3s; 
-            position: relative; 
-            flex-shrink: 0;
-        }
+        .sidebar { width: 260px; background: var(--dark); color: white; display: flex; flex-direction: column; padding: 20px; transition: 0.3s; position: relative; flex-shrink: 0; }
         .sidebar.collapsed { width: 70px; padding: 20px 10px; }
         .sidebar.collapsed span, .sidebar.collapsed h2 span { display: none; }
-        
-        .menu-item { 
-            padding: 12px; 
-            margin: 5px 0; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            transition: 0.2s;
-        }
+        .menu-item { padding: 12px; margin: 5px 0; border-radius: 8px; cursor: pointer; display: flex; align-items: center; transition: 0.2s; }
         .menu-item:hover { background: #34495e; }
 
         /* --- CONTEÚDO PRINCIPAL --- */
-        .main-content { 
-            flex: 1; 
-            padding: 40px; 
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-        }
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
         
-        .trilha-mapa { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 15px; 
-            margin-top: 30px; 
-            padding-bottom: 50px; 
-            width: 100%; 
-            max-width: 650px; /* Mais largo para o formato retangular */
-        }
+        /* Controle de Telas */
+        .tela-secao { display: none; width: 100%; max-width: 650px; flex-direction: column; align-items: center; }
+        .ativa { display: flex; }
 
-        /* --- NOVOS BOTÕES RETANGULARES --- */
-        .nivel-item {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            background: var(--white);
-            border-radius: 15px;
-            padding: 18px 25px;
-            box-shadow: 0 4px 0px rgba(0,0,0,0.05);
-            border: 2px solid var(--locked);
-            transition: all 0.2s ease;
-            cursor: pointer;
-            position: relative;
-            box-sizing: border-box;
+        /* --- ESTILO BOTÕES (TRILHA E MENU TABUADA) --- */
+        .nivel-item, .btn-menu-tabuada {
+            width: 100%; display: flex; align-items: center; background: var(--white); border-radius: 15px; padding: 18px 25px;
+            box-shadow: 0 4px 0px rgba(0,0,0,0.05); border: 2px solid var(--locked); transition: all 0.2s ease; cursor: pointer; margin-bottom: 15px;
         }
+        .liberado, .btn-menu-tabuada { border-color: var(--primary); color: var(--dark); }
+        .liberado:hover, .btn-menu-tabuada:hover { transform: translateY(-3px); box-shadow: 0 6px 0px var(--primary-dark); background-color: #f9fff3; }
+        .bloqueado { background: var(--locked); cursor: not-allowed; opacity: 0.8; }
 
-        /* Estado Liberado */
-        .nivel-item.liberado {
-            border-color: var(--primary);
-            color: var(--dark);
-        }
-        .nivel-item.liberado:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 0px var(--primary-dark);
-            background-color: #f9fff3;
-        }
-        .nivel-item.liberado:active {
-            transform: translateY(0px);
-            box-shadow: 0 2px 0px var(--primary-dark);
-        }
-
-        /* Estado Bloqueado */
-        .nivel-item.bloqueado {
-            background: var(--locked);
-            border-color: #dcdcdc;
-            cursor: not-allowed;
-            opacity: 0.8;
-        }
-
-        /* Ícone redondo dentro do retângulo */
-        .icone-box {
-            width: 50px;
-            height: 50px;
-            background: var(--bg);
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            margin-right: 20px;
-            flex-shrink: 0;
-        }
-        .liberado .icone-box { background: var(--primary); color: white; }
-        .bloqueado .icone-box { color: var(--locked-text); }
-
-        /* Textos */
+        .icone-box { width: 50px; height: 50px; background: var(--bg); border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 24px; margin-right: 20px; flex-shrink: 0; }
+        .liberado .icone-box, .btn-menu-tabuada .icone-box { background: var(--primary); color: white; }
         .info-box { flex-grow: 1; }
-        .label-nivel { 
-            font-weight: bold; 
-            font-size: 1.1em; 
-            display: block;
-            margin-bottom: 2px;
-        }
-        .desc-nivel { 
-            font-size: 0.85em; 
-            color: #777; 
-            display: block;
-        }
+        .label-nivel { font-weight: bold; font-size: 1.1em; display: block; }
 
-        /* Indicador de Cadeado / XP */
-        .status-badge {
-            font-size: 0.8em;
-            font-weight: bold;
-            padding: 5px 10px;
-            border-radius: 20px;
-            margin-left: 10px;
-        }
-        .bloqueado .status-badge { background: #cfcfcf; color: white; }
+        /* --- ESTILOS ESPECÍFICOS DA TABUADA --- */
+        .grid-tabuadas { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; width: 100%; }
+        .card-tabuada { background: white; padding: 10px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.85em; text-align: center; }
+        .card-tabuada h4 { margin: 0 0 5px 0; color: var(--primary); border-bottom: 1px solid #eee; }
+
+        .jogo-container { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 100%; }
+        .grid-opcoes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .btn-opcao { padding: 15px; font-size: 1.5em; border: 2px solid #eee; border-radius: 12px; background: white; cursor: pointer; font-weight: bold; }
+        .correta { background: var(--primary) !important; color: white; border-color: var(--primary); }
+        .errada { background: var(--wrong) !important; color: white; border-color: var(--wrong); }
 
         .btn-voltar { align-self: flex-start; padding: 10px 20px; cursor: pointer; border-radius: 8px; border: none; background: #ddd; margin-bottom: 20px; font-weight: bold; }
-        .btn-voltar:hover { background: #ccc; }
     </style>
 </head>
 <body>
 
     <div class="sidebar" id="sidebar">
         <h2 onclick="toggleSidebar()" style="cursor:pointer">🚀 <span>Menu</span></h2>
-        <div class="menu-item" onclick="window.location.href='dashboard.html'">🏠 <span>Home</span></div>
-        <div class="menu-item" onclick="window.location.href='selecao-materia.html'">⬅️ <span>Sair</span></div>
+        <div class="menu-item" onclick="mudarTela('secao-trilha')">🏠 <span>Trilha Principal</span></div>
+        <div class="menu-item" onclick="mudarTela('secao-tabuada-menu')">✖️ <span>Tabuada</span></div>
+        <div class="menu-item" onclick="window.location.href='dashboard.html'">📊 <span>Dashboard</span></div>
     </div>
 
     <div class="main-content">
-        <button class="btn-voltar" onclick="window.location.href='selecao-materia.html'">⬅ Voltar</button>
-        <h2 id="titulo-materia">Trilha de Estudo</h2>
         
-        <div class="trilha-mapa" id="container-trilha"></div>
+        <div id="secao-trilha" class="tela-secao ativa">
+            <h2 id="titulo-materia">Trilha de Estudo</h2>
+            <div class="trilha-mapa" id="container-trilha"></div>
+        </div>
+
+        <div id="secao-tabuada-menu" class="tela-secao">
+            <h2>Tabuada Interativa</h2>
+            <div class="btn-menu-tabuada" onclick="mudarTela('secao-tabuada-aprender')">
+                <div class="icone-box">📖</div>
+                <div class="info-box"><span class="label-nivel">Aprender</span><small>Estude as tabelas de 1 a 10</small></div>
+            </div>
+            <div class="btn-menu-tabuada" onclick="iniciarJogoTabuada()">
+                <div class="icone-box">🎮</div>
+                <div class="info-box"><span class="label-nivel">Jogar</span><small>Desafio aleatório de multiplicação</small></div>
+            </div>
+        </div>
+
+        <div id="secao-tabuada-aprender" class="tela-secao">
+            <button class="btn-voltar" onclick="mudarTela('secao-tabuada-menu')">⬅ Voltar</button>
+            <h2>Tabelas de Multiplicação</h2>
+            <div class="grid-tabuadas" id="container-aprender"></div>
+        </div>
+
+        <div id="secao-tabuada-jogar" class="tela-secao">
+            <div class="jogo-container">
+                <div id="jogo-progresso">Questão 1 de 10</div>
+                <div id="jogo-pergunta" style="font-size: 3.5em; font-weight: bold; margin: 20px 0;">7 x 8</div>
+                <div class="grid-opcoes" id="jogo-opcoes"></div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -196,48 +127,98 @@
             ]
         };
 
+        // --- NAVEGAÇÃO ENTRE TELAS ---
+        function mudarTela(id) {
+            document.querySelectorAll('.tela-secao').forEach(t => t.classList.remove('ativa'));
+            document.getElementById(id).classList.add('ativa');
+            if(id === 'secao-tabuada-aprender') carregarTabelas();
+            if(id === 'secao-trilha') carregarPagina();
+        }
+
+        // --- LOGICA DA TRILHA ---
         function carregarPagina() {
             const materia = localStorage.getItem('materiaFiltro') || "Matematica";
             const xpUsuario = parseInt(localStorage.getItem('xpUsuario') || "0");
             const titulos = { 'Matematica': 'Matemática', 'Portugues': 'Português' };
-            
             document.getElementById('titulo-materia').innerText = `Trilha de ${titulos[materia]}`;
-
             const container = document.getElementById('container-trilha');
             container.innerHTML = "";
 
             trilhas[materia].forEach(nivel => {
                 const liberado = xpUsuario >= nivel.xpNecessario;
-                
                 const div = document.createElement('div');
                 div.className = `nivel-item ${liberado ? 'liberado' : 'bloqueado'}`;
-                
-                div.innerHTML = `
-                    <div class="icone-box">
-                        ${liberado ? nivel.icone : '🔒'}
-                    </div>
-                    <div class="info-box">
-                        <span class="label-nivel">${nivel.nome}</span>
-                        <span class="desc-nivel">${nivel.subtopico}</span>
-                    </div>
-                    ${!liberado ? `<span class="status-badge">${nivel.xpNecessario} XP</span>` : ''}
-                `;
-
+                div.innerHTML = `<div class="icone-box">${liberado ? nivel.icone : '🔒'}</div>
+                    <div class="info-box"><span class="label-nivel">${nivel.nome}</span><span class="desc-nivel">${nivel.subtopico}</span></div>
+                    ${!liberado ? `<span class="status-badge">${nivel.xpNecessario} XP</span>` : ''}`;
                 if (liberado) {
                     div.onclick = () => {
                         localStorage.setItem('subtopicoFiltro', nivel.subtopico);
                         window.location.href = 'simulado.html';
                     };
                 }
-
                 container.appendChild(div);
             });
         }
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
+        // --- LÓGICA TABUADA APRENDER ---
+        function carregarTabelas() {
+            const container = document.getElementById('container-aprender');
+            container.innerHTML = "";
+            for(let i=1; i<=10; i++){
+                let card = `<div class="card-tabuada"><h4>x ${i}</h4>`;
+                for(let j=1; j<=10; j++) card += `<div>${i} x ${j} = ${i*j}</div>`;
+                container.innerHTML += card + `</div>`;
+            }
         }
 
+        // --- LÓGICA JOGO TABUADA ---
+        let qAtual = 1, acertos = 0, respostaCerta;
+
+        function iniciarJogoTabuada() {
+            qAtual = 1; acertos = 0;
+            mudarTela('secao-tabuada-jogar');
+            proximaQuestao();
+        }
+
+        function proximaQuestao() {
+            if(qAtual > 10) {
+                let ganho = acertos * 5;
+                let total = parseInt(localStorage.getItem('xpUsuario') || "0");
+                localStorage.setItem('xpUsuario', total + ganho);
+                alert(`Fim! Você acertou ${acertos}/10 e ganhou ${ganho} XP!`);
+                mudarTela('secao-trilha');
+                return;
+            }
+            document.getElementById('jogo-progresso').innerText = `Questão ${qAtual} de 10`;
+            let n1 = Math.floor(Math.random()*10)+1;
+            let n2 = Math.floor(Math.random()*10)+1;
+            respostaCerta = n1 * n2;
+            document.getElementById('jogo-pergunta').innerText = `${n1} x ${n2}`;
+
+            let opcoes = [respostaCerta];
+            while(opcoes.length < 4) {
+                let erro = respostaCerta + (Math.floor(Math.random()*11)-5);
+                if(erro > 0 && !opcoes.includes(erro)) opcoes.push(erro);
+            }
+            opcoes.sort(() => Math.random() - 0.5);
+
+            const container = document.getElementById('jogo-opcoes');
+            container.innerHTML = "";
+            opcoes.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-opcao';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    if(opt === respostaCerta) { btn.classList.add('correta'); acertos++; }
+                    else btn.classList.add('errada');
+                    setTimeout(() => { qAtual++; proximaQuestao(); }, 800);
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
         window.onload = carregarPagina;
     </script>
 </body>
